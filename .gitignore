@@ -1,0 +1,6 @@
+*.so
+*.o
+*.a
+test
+.DS_STORE
+.vscode/
