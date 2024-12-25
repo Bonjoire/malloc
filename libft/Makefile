@@ -6,7 +6,7 @@
 #    By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/31 14:29:47 by hubourge          #+#    #+#              #
-#    Updated: 2024/12/18 16:13:41 by hubourge         ###   ########.fr        #
+#    Updated: 2024/12/24 00:39:10 by hubourge         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,6 +50,7 @@ SRC = mandatory/ft_atoi.c \
 		mandatory/ft_substr.c \
 		mandatory/ft_memcpy.c \
 		mandatory/ft_strmapi.c \
+		mandatory/ft_putnbr_base_fd.c \
 		bonus/ft_lstnew_bonus.c \
 		bonus/ft_lstadd_front_bonus.c \
 		bonus/ft_lstsize_bonus.c \
