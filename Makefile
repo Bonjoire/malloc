@@ -6,11 +6,12 @@
 #    By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/31 14:29:47 by hubourge          #+#    #+#              #
-#    Updated: 2024/12/18 16:06:18 by hubourge         ###   ########.fr        #
+#    Updated: 2024/12/23 20:00:17 by hubourge         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC			= gcc
+# -Wpadded now if a structure is padded, it will be detected
 CFLAGS		= -Wall -Wextra -Werror -g
 INCLUDE		= -I includes
 
@@ -19,7 +20,10 @@ LIBFT		= $(LIBFT_DIR)/libft.a
 
 OBJ_DIR		= obj
 
-SRC			= srcs/malloc.c
+SRC			= srcs/malloc/malloc.c \
+				srcs/malloc/init.c \
+				srcs/show_alloc_mem/show_alloc_mem.c \
+
 OBJ			= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
 SRC_TEST	= $(SRC) srcs/main.c
@@ -50,15 +54,24 @@ $(LIBFT):
 
 $(OBJ_DIR)/%.o: %.c
 	@ mkdir -p $(@D)
-	@ echo "$(YELLOW)Compiling objects...$(NC)"
 	@ $(CC) $(CFLAGS) ${INCLUDE} -c $< -o $@
 
 libft_malloc_$(HOSTTYPE).so: $(OBJ)
+	@ echo "$(YELLOW)Compiling objects...$(NC)"
 	@ echo "$(YELLOW)Creating libft_malloc_$(HOSTTYPE).so...$(NC)"
 	@ $(CC) $(CFLAGS) ${INCLUDE} -shared -o $@ $(OBJ)
 
-test: $(OBJ_TEST)
+test: fclean $(LIBFT) $(OBJ_TEST)
+	@ echo "$(YELLOW)Compiling objects...$(NC)"
 	@ $(CC) $(CFLAGS) ${INCLUDE} -o test $(OBJ_TEST) -L$(LIBFT_DIR) -lft
+	@ echo "$(BIBlue)"
+	@ echo "                 _ _            "
+	@ echo "                | | |           "
+	@ echo " _ __ ___   __ _| | | ___   ___ "
+	@ echo "| '_ \` _ \ / _\` | | |/ _ \ / __|"
+	@ echo "| | | | | | (_| | | | (_) | (__ "
+	@ echo "|_| |_| |_|\__,_|_|_|\___/ \___|"
+	@ echo "$(NC)"
 
 clean:
 	@ echo "$(YELLOW)Cleaning in progress...$(NC)"
