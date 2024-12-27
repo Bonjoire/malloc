@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 18:23:51 by hubourge          #+#    #+#             */
-/*   Updated: 2024/12/25 20:57:58 by hubourge         ###   ########.fr       */
+/*   Updated: 2024/12/26 22:26:35 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@
 # define ALIGNED_LARGE_HEAP		(size_t)align((void*)sizeof(t_large_heap))
 # define ALIGNED_BLOCK			(size_t)align((void*)sizeof(t_block))
 # define ALIGNED_CHUNK			(size_t)align((void*)sizeof(t_chunk))
+
+// ALIGNED_DATA = 48
+// ALIGNED_HEAP = 32
+// ALIGNED_LARGE_HEAP = 32
+// ALIGNED_BLOCK = 32
+// ALIGNED_CHUNK = 48
 
 # define TINY_S_MAX_ALLOC		(size_t)((TINY_S - ALIGNED_BLOCK) / 100) - ALIGNED_CHUNK - ALIGNMENT
 # define SMALL_S_MAX_ALLOC		(size_t)((SMALL_S - ALIGNED_BLOCK) / 100) - ALIGNED_CHUNK - ALIGNMENT
@@ -67,6 +73,7 @@ typedef struct block
 	struct block		*next;
 	struct chunk		*first_chunk;
 	int					num;
+	size_t				free_size;
 }					t_block;
 
 typedef struct chunk

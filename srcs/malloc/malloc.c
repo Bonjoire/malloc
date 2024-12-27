@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 13:40:16 by hubourge          #+#    #+#             */
-/*   Updated: 2024/12/26 22:41:07 by hubourge         ###   ########.fr       */
+/*   Updated: 2024/12/27 11:59:29 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,5 @@ void    chunk_alloc(t_block *block, size_t size)
     block->first_chunk->next = NULL;
     
     block->first_chunk->size = size;
-    printf("1meta + size = %lu\n", (size_t)align((void *)block + ALIGNED_BLOCK + ALIGNED_CHUNK + size) - (size_t)block - ALIGNED_BLOCK);
-    printf("2meta + size = %lu\n", (size_t)align((void *)block->first_chunk->chunk + size) - (size_t)block - ALIGNED_BLOCK);
-    printf("3meta + size = %lu\n", (size_t)align((void *)ALIGNED_CHUNK + size));
-    
     block->free_size -= (size_t)align((void *)ALIGNED_CHUNK + size);
-    
-    // block->first_chunk->size_free = size;
 }
