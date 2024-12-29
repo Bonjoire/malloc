@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 17:42:39 by hubourge          #+#    #+#             */
-/*   Updated: 2024/12/25 19:38:04 by hubourge         ###   ########.fr       */
+/*   Updated: 2024/12/29 20:08:07 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,14 @@ int data_init(t_data **data)
 
 void    tiny_init(t_data **data)
 {
-    (*data)->tiny_heap = (t_heap *)((void *)(*data) + ALIGNED_DATA);
+    (*data)->tiny_heap = (t_heap *)((size_t)*data + ALIGNED_DATA);
     (*data)->tiny_heap->pagesize = TINY_S;
     (*data)->tiny_heap->first_block = NULL;
 }
 
 void    small_init(t_data **data)
 {
-    (*data)->small_heap = (t_heap *)((void *)(*data)->tiny_heap + ALIGNED_HEAP);
+    (*data)->small_heap = (t_heap *)((size_t)(*data)->tiny_heap + ALIGNED_HEAP);
     (*data)->small_heap->pagesize = SMALL_S;
     (*data)->small_heap->first_block = NULL;
 }

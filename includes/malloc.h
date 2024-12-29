@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 18:23:51 by hubourge          #+#    #+#             */
-/*   Updated: 2024/12/26 22:26:35 by hubourge         ###   ########.fr       */
+/*   Updated: 2024/12/29 19:52:12 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 # define ALIGNED_CHUNK			(size_t)align((void*)sizeof(t_chunk))
 
 // ALIGNED_DATA = 48
-// ALIGNED_HEAP = 32
+// ALIGNED_HEAP = 16
 // ALIGNED_LARGE_HEAP = 32
 // ALIGNED_BLOCK = 32
 // ALIGNED_CHUNK = 48
@@ -56,7 +56,6 @@ typedef struct heap
 {
 	struct block		*first_block;
 	size_t				pagesize;
-	int					nb_blocks; /////// A SUPPRIMER ?
 }					t_heap;
 
 typedef struct large_heap
@@ -64,7 +63,7 @@ typedef struct large_heap
 	struct	large_heap	*prev;
 	struct	large_heap	*next;
 	void				*start;
-	size_t				size_allocated;
+	size_t				size;
 }					t_large_heap;
 
 typedef struct block
@@ -82,7 +81,6 @@ typedef struct chunk
 	struct chunk		*next;
 	struct chunk		*prev;
 	size_t				size;
-	size_t				size_allocated;
 }					t_chunk;
 
 // malloc.c
@@ -90,6 +88,7 @@ void	*malloc(size_t size);
 void	*align(void *ptr_to_align);
 void	heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size);
 void    chunk_alloc(t_block *block, size_t size);
+bool    try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size);
 
 // init.c
 int		data_init(t_data **data);
@@ -98,6 +97,8 @@ void    small_init(t_data **data);
 
 // show_alloc_mem.c
 void	show_alloc_mem();
-void	show_alloc_debug();
+
+// show_alloc_debug.c 
+void	show_alloc_debug(); ////// remove from makefile berofe pushing
 
 #endif

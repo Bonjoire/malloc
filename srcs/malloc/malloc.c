@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 13:40:16 by hubourge          #+#    #+#             */
-/*   Updated: 2024/12/27 11:59:29 by hubourge         ###   ########.fr       */
+/*   Updated: 2024/12/29 20:22:14 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,16 +52,21 @@ void *align(void *ptr_to_align)
 
 void heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size)
 {
-    t_block *block_tmp = NULL;
-    t_block *block = heap->first_block;
+    t_block *block_tmp  = NULL;
+    t_block *block      = heap->first_block;
 
     if ((size_t)heap_pagesize == (size_t)TINY_S)
         printf("-> TINY HEAP\n"); /// debug
     else
         printf("-> SMALL HEAP\n"); /// debug
-        
+
+    printf("-> Heap pagesize = %zu\n", heap_pagesize); /// debug
     while (block != NULL)
     {
+        // If there is enough space in the block, 
+        // create a new chunk and return true, else return false
+        if (try_alloc_new_chunk_if_space_in_block(block, size))
+            return ;
         block_tmp = block;
         block = block->next;
     }
@@ -85,12 +90,41 @@ void heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size)
 
 void    chunk_alloc(t_block *block, size_t size)
 {
-    block->first_chunk = (t_chunk *)((void *)block + ALIGNED_BLOCK);
+    block->first_chunk          = (t_chunk *)((size_t)block + ALIGNED_BLOCK);
+    block->first_chunk->chunk   = (t_chunk *)((size_t)block->first_chunk + ALIGNED_CHUNK);
     
-    block->first_chunk->chunk = (t_chunk *)((void *)block->first_chunk + ALIGNED_CHUNK);
     block->first_chunk->prev = NULL;
     block->first_chunk->next = NULL;
     
     block->first_chunk->size = size;
-    block->free_size -= (size_t)align((void *)ALIGNED_CHUNK + size);
+    block->free_size -= (size_t)align((void *)ALIGNED_CHUNK + block->first_chunk->size);
+}
+
+bool    try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size)
+{
+    t_chunk *chunk_tmp = NULL;
+    t_chunk *chunk = block->first_chunk;
+
+    if (block->free_size < (size_t)align((void *)ALIGNED_CHUNK + size))
+        return (false);
+    
+    printf("-> Free size = %zu, size = %zu\n", block->free_size, size); /// debug
+    while (chunk != NULL)
+    {
+        chunk_tmp = chunk;
+        chunk = chunk->next;
+    }
+
+    chunk = (t_chunk*)((size_t)chunk_tmp->chunk + (size_t)align((void*)(size_t)chunk_tmp + chunk_tmp->size) - (size_t)chunk_tmp);
+    chunk->chunk = (t_chunk *)((size_t)chunk + ALIGNED_CHUNK);
+    
+    chunk_tmp->next = chunk;
+    chunk->prev = chunk_tmp;
+    
+    chunk->next = NULL;
+    chunk->size = size;
+    
+    block->free_size -= (size_t)align((void *)ALIGNED_CHUNK + chunk->size);
+    
+    return (true);
 }
