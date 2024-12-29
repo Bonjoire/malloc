@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 19:35:53 by hubourge          #+#    #+#             */
-/*   Updated: 2024/12/27 12:00:47 by hubourge         ###   ########.fr       */
+/*   Updated: 2024/12/29 19:50:19 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,59 +87,31 @@ static void show_heap(t_heap *heap, size_t *total)
         if (block->first_chunk)
         {
             chunk = block->first_chunk;
+            // t_chunk *chunk_bef = NULL;
             while (chunk)
             {
                 ft_putstr_fd("| 0x", 1);
-                ft_putnbr_base_fd((unsigned long)(chunk), "0123456789ABCDEF", 1);
+                ft_putnbr_base_fd((unsigned long)(chunk->chunk), "0123456789ABCDEF", 1);
                 ft_putstr_fd(" - 0x", 1);
-                ft_putnbr_base_fd((unsigned long)((size_t)align((void *)chunk->chunk + chunk->size_allocated)), "0123456789ABCDEF", 1);
+                ft_putnbr_base_fd((unsigned long)((size_t)align((void *)chunk->chunk + chunk->size)), "0123456789ABCDEF", 1);
                 ft_putstr_fd(" : ", 1);
                 ft_putnbr_fd(chunk->size, 1);
                 ft_putstr_fd(" bytes\n", 1);
                 *total += chunk->size;
-                // printf("diff addr = %lu\n", (unsigned long)((size_t)align((void *)chunk->chunk + chunk->size_allocated) - (size_t)chunk));
+
+                // if (chunk_bef)
+                // {
+                //     printf("diffout %ld\n", (size_t)((size_t)chunk->chunk - (size_t)align((void*)chunk_bef->chunk + chunk_bef->size)));
+                //     printf("%p - %p\n", (void*)align((void *)chunk_bef->chunk + chunk_bef->size), (void*)chunk->chunk);
+                // }
+                // printf("diff in %zu\n", (unsigned long)((size_t)align((void *)chunk->chunk + chunk->size) - (unsigned long)(chunk->chunk)));
+                // printf("%p - %p\n", (void*)align((void *)chunk->chunk + chunk->size, (void*)chunk->chunk));
+                // chunk_bef = chunk;
+                
                 chunk = chunk->next;
             }
         }
         block = block->next;
     }
     ft_putstr_fd("|\n", 1);
-}
-
-void show_alloc_debug()
-{
-    if (g_data == NULL)
-        return ;
-
-    printf("TINY  :          0x%p\n", g_data->tiny_heap);
-    t_block *block = g_data->tiny_heap->first_block;
-    while (block)
-    {
-        printf("====BLOCK :      0x%p\n", block);
-        t_chunk *chunk = block->first_chunk;
-        while (chunk)
-        {
-            printf("=========CHUNK : 0x%p\n", chunk);
-            chunk = chunk->next;
-        }
-        printf("\n");
-        block = block->next;
-    }
-
-    printf("SMALL : 0x%p\n", g_data->small_heap);
-    block = g_data->small_heap->first_block;
-    while (block)
-    {
-        printf("====BLOCK :      0x%p\n", block);
-        t_chunk *chunk = block->first_chunk;
-        while (chunk)
-        {
-            printf("=========CHUNK : 0x%p\n", chunk);
-            chunk = chunk->next;
-        }
-        printf("\n");
-        block = block->next;
-    }
-    
-    printf("LARGE : 0x%p\n", g_data->large_heap);
 }
