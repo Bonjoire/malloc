@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 18:23:51 by hubourge          #+#    #+#             */
-/*   Updated: 2024/12/29 19:52:12 by hubourge         ###   ########.fr       */
+/*   Updated: 2024/12/30 19:01:12 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
 # include <sys/mman.h>
 # include <stdbool.h>
 
-# define PAGESIZE 				getpagesize() // 16384 bytes
-# define TINY_S					PAGESIZE * 2  // 32768 bytes
-# define SMALL_S				PAGESIZE * 64 // 1048576 bytes
+# define PAGESIZE 				(size_t)sysconf(_SC_PAGESIZE) // 16384 bytes
+# define TINY_S					(size_t)PAGESIZE * 2  // 32768 bytes
+# define SMALL_S				(size_t)PAGESIZE * 64 // 1048576 bytes
 # define LARGE_S				1
 
 # define ALIGNMENT 				16
@@ -83,22 +83,23 @@ typedef struct chunk
 	size_t				size;
 }					t_chunk;
 
-// malloc.c
+//	malloc.c
 void	*malloc(size_t size);
 void	*align(void *ptr_to_align);
 void	heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size);
-void    chunk_alloc(t_block *block, size_t size);
-bool    try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size);
+void	chunk_alloc(t_block *block, size_t size);
+bool	try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size);
+void	large_alloc(t_large_heap *heap, size_t size);
 
-// init.c
+//	init.c
 int		data_init(t_data **data);
-void    tiny_init(t_data **data);
-void    small_init(t_data **data);
+void	tiny_init(t_data **data);
+void	small_init(t_data **data);
 
-// show_alloc_mem.c
+//	show_alloc_mem.c
 void	show_alloc_mem();
 
-// show_alloc_debug.c 
+//	show_alloc_debug.c 
 void	show_alloc_debug(); ////// remove from makefile berofe pushing
 
 #endif

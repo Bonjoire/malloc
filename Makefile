@@ -6,7 +6,7 @@
 #    By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/31 14:29:47 by hubourge          #+#    #+#              #
-#    Updated: 2024/12/29 19:46:44 by hubourge         ###   ########.fr        #
+#    Updated: 2024/12/30 19:01:49 by hubourge         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,11 +20,11 @@ LIBFT		= $(LIBFT_DIR)/libft.a
 
 OBJ_DIR		= obj
 
-SRC			= srcs/malloc/malloc.c \
+SRC			=	srcs/malloc/malloc.c \
+				srcs/malloc/allocation.c \
 				srcs/malloc/init.c \
 				srcs/show_alloc_mem/show_alloc_mem.c \
 				srcs/show_alloc_mem/show_alloc_debug.c \
-
 
 OBJ			= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
