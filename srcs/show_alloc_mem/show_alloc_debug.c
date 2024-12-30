@@ -6,13 +6,14 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 19:44:59 by hubourge          #+#    #+#             */
-/*   Updated: 2024/12/29 23:07:44 by hubourge         ###   ########.fr       */
+/*   Updated: 2024/12/30 18:45:04 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
 static void show_heap(size_t base, t_heap *heap);
+static void show_large_heap(size_t base, t_large_heap *heap);
 
 void show_alloc_debug()
 {
@@ -29,6 +30,7 @@ void show_alloc_debug()
     show_heap(base, g_data->small_heap);
    
     printf("| - Large :      %p meta(%zu) deep(%zu)\n", g_data->large_heap, (size_t)g_data->large_heap - (size_t)g_data,  (size_t)g_data->large_heap - base);
+    show_large_heap(base, g_data->large_heap);
 }
 
 static void show_heap(size_t base, t_heap *heap)
@@ -46,5 +48,16 @@ static void show_heap(size_t base, t_heap *heap)
         }
         printf("\n");
         block = block->next;
+    }
+}
+
+static void show_large_heap(size_t base, t_large_heap *heap)
+{
+    t_large_heap* large_heap = heap;
+
+    while (large_heap)
+    {
+        printf("  | - CHUNK :      %p meta(%zu) deep(%zu) size(%zu) align(%zu)\n", large_heap, ALIGNED_LARGE_HEAP, (size_t)large_heap - base, large_heap->size, (size_t)align((void*)large_heap->size));
+        large_heap = large_heap->next;
     }
 }

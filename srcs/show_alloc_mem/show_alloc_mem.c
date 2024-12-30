@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 19:35:53 by hubourge          #+#    #+#             */
-/*   Updated: 2024/12/29 19:50:19 by hubourge         ###   ########.fr       */
+/*   Updated: 2024/12/30 18:53:08 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static void show_tiny(size_t *total);
 static void show_small(size_t *total);
 static void show_large(size_t *total);
 static void show_heap(t_heap *heap, size_t *total);
+static void show_large_heap(t_large_heap *heap, size_t *total);
 
 void show_alloc_mem()
 {
@@ -53,8 +54,6 @@ static void show_tiny(size_t *total)
     ft_putstr_fd("\n", 1);
 
     show_heap(g_data->tiny_heap, total);
-    
-    (void)total;
 }
 
 static void show_small(size_t *total)
@@ -64,17 +63,16 @@ static void show_small(size_t *total)
     ft_putstr_fd("\n", 1);
 
     show_heap(g_data->small_heap, total);
-
-    (void)total;
 }
 
 static void show_large(size_t *total)
 {
     ft_putstr_fd("| LARGE : 0x", 1);
     ft_putnbr_base_fd((unsigned long)(g_data->large_heap), "0123456789ABCDEF", 1);
-    ft_putstr_fd("\n| \n", 1);
+    ft_putstr_fd("\n", 1);
 
-    (void)total;
+
+    show_large_heap(g_data->large_heap, total);
 }
 
 static void show_heap(t_heap *heap, size_t *total)
@@ -114,4 +112,23 @@ static void show_heap(t_heap *heap, size_t *total)
         block = block->next;
     }
     ft_putstr_fd("|\n", 1);
+}
+
+static void show_large_heap(t_large_heap *heap, size_t *total)
+{
+    t_large_heap* large_heap = heap;
+
+    while (large_heap)
+    {
+        ft_putstr_fd("| 0x", 1);
+        ft_putnbr_base_fd((unsigned long)(large_heap->start), "0123456789ABCDEF", 1);
+        ft_putstr_fd(" - 0x", 1);
+        ft_putnbr_base_fd((unsigned long)((size_t)align((void *)large_heap->start + large_heap->size)), "0123456789ABCDEF", 1);
+        ft_putstr_fd(" : ", 1);
+        ft_putnbr_fd(large_heap->size, 1);
+        ft_putstr_fd(" bytes\n", 1);
+        
+        *total += large_heap->size;
+        large_heap = large_heap->next;
+    }
 }
