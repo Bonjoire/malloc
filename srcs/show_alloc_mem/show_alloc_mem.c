@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   show_alloc_mem.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
+/*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 19:35:53 by hubourge          #+#    #+#             */
-/*   Updated: 2024/12/30 18:53:08 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/03 17:38:42 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ static void show_heap(t_heap *heap, size_t *total)
 
                 // if (chunk_bef)
                 // {
-                //     printf("diffout %ld\n", (size_t)((size_t)chunk->chunk - (size_t)align((void*)chunk_bef->chunk + chunk_bef->size)));
+                //     printf("diffout %Td\n", (size_t)((size_t)chunk->chunk - (size_t)align((void*)chunk_bef->chunk + chunk_bef->size)));
                 //     printf("%p - %p\n", (void*)align((void *)chunk_bef->chunk + chunk_bef->size), (void*)chunk->chunk);
                 // }
                 // printf("diff in %zu\n", (unsigned long)((size_t)align((void *)chunk->chunk + chunk->size) - (unsigned long)(chunk->chunk)));

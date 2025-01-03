@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   malloc.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
+/*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 18:23:51 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/03 15:51:29 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/03 18:12:28 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,13 @@
 # include <stdio.h>
 # include <sys/mman.h>
 # include <stdbool.h>
+# include <stdint.h>
+# include <sys/time.h>
+# include <sys/resource.h>
 
-# define PAGESIZE 				(size_t)sysconf(_SC_PAGESIZE) // 16384 bytes
-# define TINY_S					(size_t)PAGESIZE * 2  // 32768 bytes
-# define SMALL_S				(size_t)PAGESIZE * 64 // 1048576 bytes
+# define PAGESIZE 				(size_t)sysconf(_SC_PAGESIZE)	// 4096 bytes
+# define TINY_S					(size_t)PAGESIZE * 4			// 16384 bytes
+# define SMALL_S				(size_t)PAGESIZE * 128			// 524288 bytes
 # define LARGE_S				1
 
 # define ALIGNMENT 				16
@@ -31,16 +34,17 @@
 # define ALIGNED_BLOCK			(size_t)align((void*)sizeof(t_block))
 # define ALIGNED_CHUNK			(size_t)align((void*)sizeof(t_chunk))
 
-// ALIGNED_DATA = 48
-// ALIGNED_HEAP = 16
-// ALIGNED_LARGE_HEAP = 32
-// ALIGNED_BLOCK = 32
-// ALIGNED_CHUNK = 48
+// ALIGNED_DATA			= 48 bytes
+// ALIGNED_HEAP			= 16 bytes
+// ALIGNED_LARGE_HEAP	= 32 bytes
+// ALIGNED_BLOCK		= 32 bytes
+// ALIGNED_CHUNK		= 48 bytes 
 
 # define TINY_S_MAX_ALLOC		(size_t)((TINY_S - ALIGNED_BLOCK) / 100) - ALIGNED_CHUNK - ALIGNMENT
 # define SMALL_S_MAX_ALLOC		(size_t)((SMALL_S - ALIGNED_BLOCK) / 100) - ALIGNED_CHUNK - ALIGNMENT
-// 279 bytes
-// 10437 bytes
+
+// TINY_S_MAX_ALLOC		= 115 bytes
+// SMALL_S_MAX_ALLOC	= 5194 bytes
 
 typedef struct data
 {
@@ -86,6 +90,8 @@ typedef struct chunk
 
 //	malloc.c
 void	*malloc(size_t size);
+
+// allocatoin.c
 void	*align(void *ptr_to_align);
 void	heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size);
 void	chunk_alloc(t_block *block, size_t size);
@@ -101,6 +107,6 @@ void	small_init(t_data **data);
 void	show_alloc_mem();
 
 //	show_alloc_debug.c 
-void	show_alloc_debug(); ////// remove from makefile berofe pushing
+void	show_alloc_debug(); ////// remove from makefile berofe pushing ?
 
 #endif

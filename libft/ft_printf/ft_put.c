@@ -3,32 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   ft_put.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
+/*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 12:21:56 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/03 15:35:43 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/03 19:29:37 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_printf_strlen(const char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
-
-int	ft_printf_putchar_fd(char c, int fd)
+int	ft_pf_putchar_fd(char c, int fd)
 {
 	write(fd, &c, 1);
 	return (1);
 }
 
-int	ft_printf_putstr_fd(char *s, int fd)
+int	ft_pf_putstr_fd(char *s, int fd)
 {
 	if (s == NULL)
 	{
@@ -36,15 +26,15 @@ int	ft_printf_putstr_fd(char *s, int fd)
 		return (6);
 	}
 	if (s != NULL && fd != 0)
-		write (fd, s, ft_printf_strlen(s));
-	return (ft_printf_strlen(s));
+		write (fd, s, ft_pf_strlen(s));
+	return (ft_pf_strlen(s));
 }
 
-int	ft_printf_putnbr_fd(long long int n, int fd, int cpt)
+int	ft_pf_putnbr_fd(long long int n, int fd, int cpt)
 {
 	int	tmp;
 
-	tmp = ft_printf_check(n, cpt);
+	tmp = ft_pf_check(n, cpt);
 	if (cpt != tmp)
 		return (tmp);
 	if (n < 0)
@@ -59,23 +49,35 @@ int	ft_printf_putnbr_fd(long long int n, int fd, int cpt)
 		cpt++;
 	}
 	if (n < 10)
-		cpt += ft_printf_putchar_fd(n + '0', fd);
+		cpt += ft_pf_putchar_fd(n + '0', fd);
 	else
 	{
-		cpt = ft_printf_putnbr_fd(n / 10, fd, cpt);
-		cpt += ft_printf_putchar_fd(n % 10 + '0', fd);
+		cpt = ft_pf_putnbr_fd(n / 10, fd, cpt);
+		cpt += ft_pf_putchar_fd(n % 10 + '0', fd);
 	}
 	return (cpt);
 }
 
-int	ft_printf_putnbr_uns_fd(unsigned int n, int fd, int cpt)
+int	ft_pf_putnbr_st_fd(size_t n, int fd, int cpt)
 {
 	if (n < 10)
-		cpt += ft_printf_putchar_fd(n + '0', fd);
+		cpt += ft_pf_putchar_fd(n + '0', fd);
 	else
 	{
-		cpt = ft_printf_putnbr_fd(n / 10, fd, cpt);
-		cpt += ft_printf_putchar_fd(n % 10 + '0', fd);
+		cpt = ft_pf_putnbr_st_fd(n / 10, fd, cpt);
+		cpt += ft_pf_putchar_fd(n % 10 + '0', fd);
+	}
+	return (cpt);
+}
+
+int	ft_pf_putnbr_uns_fd(unsigned int n, int fd, int cpt)
+{
+	if (n < 10)
+		cpt += ft_pf_putchar_fd(n + '0', fd);
+	else
+	{
+		cpt = ft_pf_putnbr_fd(n / 10, fd, cpt);
+		cpt += ft_pf_putchar_fd(n % 10 + '0', fd);
 	}
 	return (cpt);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   allocation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
+/*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 18:55:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/03 16:48:39 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/03 19:23:52 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,18 +27,34 @@ void heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size)
         block = block->next;
     }
 
-    ft_putstr_fd("heap_pagesize ", 1);
-    ft_putnbr_base_fd((size_t)heap_pagesize, "0123456789", 1);
-    ft_putstr_fd(" sizeof(size_t) ", 1);
-    ft_putnbr_base_fd(sizeof(size_t), "0123456789", 1);
-    ft_putstr_fd("\n", 1);
+    // ft_putstr_fd("heap_pagesize ", 1);
+    // ft_putnbr_base_fd((size_t)heap_pagesize, "0123456789", 1);
+    // ft_putstr_fd(" sizeof(size_t) ", 1);
+    // ft_putnbr_base_fd(sizeof(size_t), "0123456789", 1);
+    // ft_putstr_fd("\n", 1);
 
-    ft_putstr_fd("heap_pagesize ", 1);
-    ft_putnbr_base_fd((unsigned long)heap_pagesize, "0123456789", 1);
-    ft_putstr_fd(" sizeof(unsigned long) ", 1);
-    ft_putnbr_base_fd(sizeof(unsigned long), "0123456789", 1);
-    ft_putstr_fd("\n", 1);
+    // ft_putstr_fd("heap_pagesize ", 1);
+    // ft_putnbr_base_fd((unsigned long)heap_pagesize, "0123456789", 1);
+    // ft_putstr_fd(" sizeof(unsigned long) ", 1);
+    // ft_putnbr_base_fd(sizeof(unsigned long), "0123456789", 1);
+    // ft_putstr_fd("\n", 1);
     
+	// ft_printf("block tmp %p, %T, ", block_tmp, (size_t)block_tmp);
+	// ft_putnbr_base_fd((size_t)block_tmp, "0123456789", 1);
+	// ft_printf("\n");
+	
+	// ft_printf("block bef %p, %T, ", block, (size_t)block);
+	// ft_putnbr_base_fd((size_t)block, "0123456789", 1);
+	// ft_printf("\n");
+	
+	// ft_printf("heap_pagesize %T, ", (size_t)heap_pagesize);
+	// ft_putnbr_base_fd((size_t)heap_pagesize, "0123456789", 1);
+	// ft_printf("\n");
+
+	// ft_printf("g_data      %p, %T, ", g_data,  (size_t)g_data);
+	// ft_putnbr_base_fd((size_t)g_data, "0123456789", 1);
+	// ft_printf("\n");
+
     // heap_pagesize
     block = (t_block *)mmap(NULL, (size_t)heap_pagesize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (block == MAP_FAILED)
@@ -46,7 +62,11 @@ void heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size)
         g_data->failed = true;        
         return ;
     }
-    
+
+	// ft_printf("block after %p, %T, ", block, (size_t)block);
+	// ft_putnbr_base_fd((size_t)block, "0123456789", 1);
+	// ft_printf("\n");
+
     if (block_tmp != NULL)
         block_tmp->next = block;
     else
