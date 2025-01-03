@@ -6,7 +6,7 @@
 #    By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/31 14:29:47 by hubourge          #+#    #+#              #
-#    Updated: 2024/12/24 00:39:10 by hubourge         ###   ########.fr        #
+#    Updated: 2025/01/03 15:53:34 by hubourge         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,6 +60,11 @@ SRC = mandatory/ft_atoi.c \
 		bonus/ft_lstclear_bonus.c \
 		bonus/ft_lstiter_bonus.c \
 		bonus/ft_lstmap_bonus.c \
+		ft_printf/ft_printf.c \
+		ft_printf/ft_put.c \
+		ft_printf/ft_putnbr_base.c \
+		ft_printf/ft_address.c \
+		ft_printf/ft_check.c \
 
 OBJ = ${SRC:.c=.o}
 
@@ -67,15 +72,15 @@ OBJ = ${SRC:.c=.o}
 	${CC} ${CFLAGS} -c $< -o $@
 
 $(NAME) : ${OBJ}
-	ar -rc  $(NAME) ${OBJ}
+	@ ar -rc  $(NAME) ${OBJ}
 
 all : $(NAME)
 
 clean :
-	rm -f ${OBJ}
+	@ rm -f ${OBJ}
 
 fclean : clean
-	rm -f ${NAME}
+	@ rm -f ${NAME}
 
 re : fclean all
 

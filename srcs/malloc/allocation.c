@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 18:55:35 by hubourge          #+#    #+#             */
-/*   Updated: 2024/12/30 19:05:58 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/03 16:48:39 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,6 @@ void heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size)
     t_block *block_tmp  = NULL;
     t_block *block      = heap->first_block;
 
-    if ((size_t)heap_pagesize == (size_t)TINY_S)
-        printf("-> TINY HEAP\n"); /// debug
-    else
-        printf("-> SMALL HEAP\n"); /// debug
-
-    printf("-> Heap pagesize = %zu\n", heap_pagesize); /// debug
     while (block != NULL)
     {
         // If there is enough space in the block, 
@@ -32,17 +26,26 @@ void heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size)
         block_tmp = block;
         block = block->next;
     }
-    printf("--> Block avant = %p\n", block); /// debug
 
-    block = (t_block *)mmap(NULL, heap_pagesize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    ft_putstr_fd("heap_pagesize ", 1);
+    ft_putnbr_base_fd((size_t)heap_pagesize, "0123456789", 1);
+    ft_putstr_fd(" sizeof(size_t) ", 1);
+    ft_putnbr_base_fd(sizeof(size_t), "0123456789", 1);
+    ft_putstr_fd("\n", 1);
+
+    ft_putstr_fd("heap_pagesize ", 1);
+    ft_putnbr_base_fd((unsigned long)heap_pagesize, "0123456789", 1);
+    ft_putstr_fd(" sizeof(unsigned long) ", 1);
+    ft_putnbr_base_fd(sizeof(unsigned long), "0123456789", 1);
+    ft_putstr_fd("\n", 1);
+    
+    // heap_pagesize
+    block = (t_block *)mmap(NULL, (size_t)heap_pagesize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (block == MAP_FAILED)
     {
         g_data->failed = true;        
         return ;
     }
-    printf("--> Block apres = %p, %zu\n", block, (size_t)block - (size_t)g_data); /// debug
-    printf("--> Block size = %zu\n", heap_pagesize); /// debug
-    printf("--> Block deep = %zu\n", (size_t)block - (size_t)g_data); 
     
     if (block_tmp != NULL)
         block_tmp->next = block;
@@ -76,7 +79,6 @@ bool    try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size)
     if (block && block->free_size < (size_t)align((void *)ALIGNED_CHUNK + size))
         return (false);
 
-    printf("-> Free size = %zu, size = %zu\n", block->free_size, size); /// debug
     while (chunk != NULL)
     {
         chunk_tmp = chunk;
@@ -108,7 +110,7 @@ void    large_alloc(t_large_heap *heap, size_t size)
         heap = heap->next;
     }
 
-    new_heap = (t_large_heap *)mmap(NULL, (size_t)align((void*)size + ALIGNED_LARGE_HEAP), PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    new_heap = (t_large_heap *)mmap(NULL, (size_t)align(ALIGNED_LARGE_HEAP + (void*)size), PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (new_heap == MAP_FAILED)
     {
         g_data->failed = true;

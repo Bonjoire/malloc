@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 13:40:16 by hubourge          #+#    #+#             */
-/*   Updated: 2024/12/30 19:05:10 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/03 15:01:09 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ t_data *g_data = NULL;
 
 void *malloc(size_t size)
 {
-    printf("-------------------\n");
-    printf("-> Size = %zu (%lu)bytes\n", size, sizeof(size)); /// debug
     if (size == 0)
         return (NULL);
 
@@ -34,7 +32,6 @@ void *malloc(size_t size)
     else
         large_alloc(g_data->large_heap, size);
 
-    printf("-------------------\n\n");
     if (g_data->failed == false)
         return (g_data->addr_return);
     

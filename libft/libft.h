@@ -6,12 +6,14 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 16:54:17 by hubourge          #+#    #+#             */
-/*   Updated: 2024/12/24 00:39:53 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/03 15:30:38 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
+
+# include "./ft_printf/ft_printf.h"
 
 # include <stdlib.h>
 # include <unistd.h>

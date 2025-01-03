@@ -6,13 +6,15 @@
 #    By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/31 14:29:47 by hubourge          #+#    #+#              #
-#    Updated: 2024/12/30 19:01:49 by hubourge         ###   ########.fr        #
+#    Updated: 2025/01/03 16:48:14 by hubourge         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC			= gcc
+CXX			= gcc
+
 # -Wpadded now if a structure is padded, it will be detected
-CFLAGS		= -Wall -Wextra -Werror -g
+# -Wall -Wextra -Werror
+CFLAGS		=  -g -Wall -Wextra -Werror
 INCLUDE		= -I includes
 
 LIBFT_DIR	= ./libft
@@ -56,16 +58,16 @@ $(LIBFT):
 
 $(OBJ_DIR)/%.o: %.c
 	@ mkdir -p $(@D)
-	@ $(CC) $(CFLAGS) ${INCLUDE} -c $< -o $@
+	@ $(CXX) $(CFLAGS) ${INCLUDE} -c $< -o $@
 
 libft_malloc_$(HOSTTYPE).so: $(OBJ)
 	@ echo "$(YELLOW)Compiling objects...$(NC)"
 	@ echo "$(YELLOW)Creating libft_malloc_$(HOSTTYPE).so...$(NC)"
-	@ $(CC) $(CFLAGS) ${INCLUDE} -shared -o $@ $(OBJ)
+	@ $(CXX) $(CFLAGS) ${INCLUDE} -shared -o $@ $(OBJ)
 
 test: fclean $(LIBFT) $(OBJ_TEST)
 	@ echo "$(YELLOW)Compiling objects...$(NC)"
-	@ $(CC) $(CFLAGS) ${INCLUDE} -o test $(OBJ_TEST) -L$(LIBFT_DIR) -lft
+	@ $(CXX) $(CFLAGS) ${INCLUDE} -o test $(OBJ_TEST) -L$(LIBFT_DIR) -lft
 	@ echo "$(BIBlue)"
 	@ echo "                 _ _            "
 	@ echo "                | | |           "
