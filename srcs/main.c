@@ -14,10 +14,10 @@
 
 int main()
 {
-    char *str = (char *)malloc(279);
-    char *str1 = (char *)malloc(279);
-    int *str2 = (int *)malloc(280);
-    int *str3 = (int *)malloc(280);
+    char *str = (char *)malloc(250);
+    char *str1 = (char *)malloc(300);
+    int *str2 = (int *)malloc(350);
+    int *str3 = (int *)malloc(400);
 
     char *str4 = (char *)malloc(10437);
     char *str5 = (char *)malloc(10438);
@@ -25,19 +25,27 @@ int main()
 
     ft_printf("\n==================== MAIN ====================\n\n");
 
-    str[0] = 'a';
-    str[1] = 'b';
-    str[2] = 'c';
-    str[3] = 'd';
-    str[3] = '\0';
+    (void)str;
+    (void)str1;
+    (void)str2;
+    (void)str3;
+    (void)str4;
+    (void)str5;
+    (void)str6;
 
-    ft_printf("str  = %p, '%s'\n", str, str);
-    ft_printf("str1 = %p, '%s'\n", str1, str1);
-    ft_printf("str2 = %p\n", str2);
-    ft_printf("str3 = %p\n", str3);
-    ft_printf("str4  = %p, '%s'\n", str4, str4);
-    ft_printf("str5 = %p, '%s'\n", str5, str5);
-    ft_printf("str6  = %p, '%s'\n", str6, str6);
+    // str[0] = 'a';
+    // str[1] = 'b';
+    // str[2] = 'c';
+    // str[3] = 'd';
+    // str[3] = '\0';
+
+    // ft_printf("str  = %p, '%s'\n", str, str);
+    // ft_printf("str1 = %p, '%s'\n", str1, str1);
+    // ft_printf("str2 = %p\n", str2);
+    // ft_printf("str3 = %p\n", str3);
+    // ft_printf("str4  = %p, '%s'\n", str4, str4);
+    // ft_printf("str5 = %p, '%s'\n", str5, str5);
+    // ft_printf("str6  = %p, '%s'\n", str6, str6);
 
     // struct rlimit limit;
     // if (getrlimit(RLIMIT_AS, &limit) == -1)

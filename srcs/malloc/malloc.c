@@ -16,6 +16,9 @@ t_data *g_data = NULL;
 
 void *malloc(size_t size)
 {
+	ft_printf("========= MALLOC ========\n");
+    ft_printf("size %T bytes\n", size);
+
     if (size == 0)
         return (NULL);
 
@@ -31,7 +34,7 @@ void *malloc(size_t size)
         heap_alloc(g_data->small_heap, SMALL_S, size);
     else
         large_alloc(g_data->large_heap, size);
-
+    
     if (g_data->failed == false)
         return (g_data->addr_return);
     

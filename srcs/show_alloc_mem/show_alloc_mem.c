@@ -106,6 +106,8 @@ static void show_heap(t_heap *heap, size_t *total)
                 // printf("%p - %p\n", (void*)align((void *)chunk->chunk + chunk->size, (void*)chunk->chunk));
                 // chunk_bef = chunk;
                 
+                // if (chunk == chunk->next) ////////////////////
+				//     break ;
                 chunk = chunk->next;
             }
         }

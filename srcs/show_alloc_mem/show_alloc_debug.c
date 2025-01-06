@@ -45,7 +45,9 @@ static void show_heap(t_heap *heap)
 		
 		while (chunk)
 		{
-			ft_printf("     | - CHUNK :      %p meta(%T) deep(%T) size(%T) align(%T)\n", chunk, (size_t)ALIGNED_CHUNK, (size_t)chunk - (size_t)base, chunk->size, (size_t)align((void*)chunk->size));
+			ft_printf("     | - CHUNK :      %p meta(%T) deep(%T) size(%T) align(%T)\n", chunk->chunk, (size_t)ALIGNED_CHUNK, (size_t)chunk - (size_t)base, chunk->size, (size_t)align((void*)chunk->size));
+			// if (chunk == chunk->next) /////////////////////
+			// 	break ;
 			chunk = chunk->next;
 		}
 		
