@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 18:23:51 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/03 18:12:28 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/06 19:54:36 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 # define PAGESIZE 				(size_t)sysconf(_SC_PAGESIZE)	// 4096 bytes
 # define TINY_S					(size_t)PAGESIZE * 4			// 16384 bytes
 # define SMALL_S				(size_t)PAGESIZE * 128			// 524288 bytes
-# define LARGE_S				1
 
 # define ALIGNMENT 				16
 # define ALIGNED_DATA			(size_t)align((void*)sizeof(t_data))
@@ -37,14 +36,14 @@
 // ALIGNED_DATA			= 48 bytes
 // ALIGNED_HEAP			= 16 bytes
 // ALIGNED_LARGE_HEAP	= 32 bytes
-// ALIGNED_BLOCK		= 32 bytes
+// ALIGNED_BLOCK		= 48 bytes
 // ALIGNED_CHUNK		= 48 bytes 
 
-# define TINY_S_MAX_ALLOC		(size_t)((TINY_S - ALIGNED_BLOCK) / 100) - ALIGNED_CHUNK - ALIGNMENT
-# define SMALL_S_MAX_ALLOC		(size_t)((SMALL_S - ALIGNED_BLOCK) / 100) - ALIGNED_CHUNK - ALIGNMENT
+# define TINY_S_MAX_ALLOC		(size_t)align((void*)((TINY_S - ALIGNED_BLOCK) / 100) - ALIGNED_CHUNK - ALIGNMENT)
+# define SMALL_S_MAX_ALLOC		(size_t)align((void*)((SMALL_S - ALIGNED_BLOCK) / 100) - ALIGNED_CHUNK - ALIGNMENT)
 
-// TINY_S_MAX_ALLOC		= 115 bytes
-// SMALL_S_MAX_ALLOC	= 5194 bytes
+// TINY_S_MAX_ALLOC		= 112 bytes
+// SMALL_S_MAX_ALLOC	= 5148 bytes
 
 typedef struct data
 {
@@ -53,6 +52,7 @@ typedef struct data
 	struct	large_heap	*large_heap;
 	void				*addr_return;
 	bool				failed;
+	size_t				total_size;
 }					t_data;
 
 extern t_data *g_data;
@@ -95,15 +95,18 @@ void	*malloc(size_t size);
 // allocatoin.c
 void	*align(void *ptr_to_align);
 void	heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size);
+void	large_alloc(t_large_heap *heap, size_t size);
 void	chunk_alloc(t_block *block, size_t size);
 bool	try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size);
 bool    try_alloc_new_chunk_if_space_in_chunk(t_block* block, t_chunk *chunk, size_t size);
-void	large_alloc(t_large_heap *heap, size_t size);
 
 //	init.c
 int		data_init(t_data **data);
 void	tiny_init(t_data **data);
 void	small_init(t_data **data);
+
+// utils.c
+void	*align(void *ptr_to_align);
 
 //	show_alloc_mem.c
 void	show_alloc_mem();

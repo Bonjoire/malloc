@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 18:55:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/03 19:23:52 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/06 19:17:49 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ void    chunk_alloc(t_block *block, size_t size)
 	block->first_chunk->size_next = block->free_size;
 	
 	g_data->addr_return = block->first_chunk->chunk;
+	g_data->total_size += size;
 }
 
 bool    try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size)
@@ -120,6 +121,8 @@ bool    try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size)
 	chunk->size_next = block->free_size;
 
 	g_data->addr_return = chunk->chunk;
+	g_data->total_size += size;
+
 	return (true);
 }
 
@@ -170,6 +173,8 @@ bool    try_alloc_new_chunk_if_space_in_chunk(t_block* block, t_chunk *prev_chun
 	new_chunk->size_next = prev_chunk->size_next - (size_t)align((void*)ALIGNED_CHUNK + new_chunk->size);
 
 	g_data->addr_return = new_chunk->chunk;
+	g_data->total_size += size;
+
 	return (true);
 }
 
@@ -202,4 +207,6 @@ void    large_alloc(t_large_heap *heap, size_t size)
 	new_heap->size = size;
 	
 	g_data->addr_return = new_heap->start;
+	g_data->total_size += size;
+
 }

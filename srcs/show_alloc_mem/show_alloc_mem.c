@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 19:35:53 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/03 17:38:42 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/06 18:41:00 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,12 @@ void show_alloc_mem()
     
     ft_putstr_fd("| Total : ", 1);
     ft_putnbr_fd(total, 1);
-    ft_putstr_fd(" bytes\n|\n", 1);
+    ft_putstr_fd(" bytes\n", 1);
+	
+	if (g_data->total_size != total) ////////////// DEBUG
+		ft_putstr_fd("| ERROR : total_size != total\n", 1); //////////////// DEBUG
 
+	ft_putstr_fd("|\n", 1);
     ft_putstr_fd("| ==========================\n\n", 1);
 }
 

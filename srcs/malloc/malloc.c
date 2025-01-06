@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   malloc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
+/*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 13:40:16 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/03 15:01:09 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/06 17:39:55 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,9 @@ t_data *g_data = NULL;
 
 void *malloc(size_t size)
 {
-	ft_printf("========= MALLOC ========\n");
-    ft_printf("size %T bytes\n", size);
-
-    if (size == 0)
-        return (NULL);
-
+	// ft_printf("========= MALLOC ========\n");
+    // ft_printf("size %T bytes\n", size);
+	
     if (g_data == NULL)
     {
         if (!data_init(&g_data))

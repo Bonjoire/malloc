@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 17:42:39 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/03 17:39:27 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/06 18:35:23 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int data_init(t_data **data)
 
     (*data)->failed = false;
     (*data)->addr_return = NULL;
+	(*data)->total_size = 0;
 
     return (true);
 }
@@ -47,14 +48,4 @@ void    small_init(t_data **data)
     (*data)->small_heap = (t_heap *)((size_t)(*data)->tiny_heap + ALIGNED_HEAP);
     (*data)->small_heap->pagesize = SMALL_S;
     (*data)->small_heap->first_block = NULL;
-}
-
-void *align(void *ptr_to_align)
-{
-    uintptr_t new_ptr = (uintptr_t)ptr_to_align;
-
-    if ((new_ptr % ALIGNMENT) != 0)
-        new_ptr += ALIGNMENT - (new_ptr % ALIGNMENT);
-
-    return ((void *)new_ptr);
 }

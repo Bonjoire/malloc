@@ -6,67 +6,201 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 18:26:59 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/03 18:16:38 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/06 20:39:20 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
+void	malloc_test();
+void	test_error();
+void	test_tiny(size_t *error);
+void	test_small(size_t *error);
+
 int main()
-{
-    char *str = (char *)malloc(250);
-    char *str1 = (char *)malloc(300);
-    int *str2 = (int *)malloc(350);
-    int *str3 = (int *)malloc(400);
-
-    char *str4 = (char *)malloc(10437);
-    char *str5 = (char *)malloc(10438);
-    char *str6 = (char *)malloc(20000);
-
+{   
     ft_printf("\n==================== MAIN ====================\n\n");
-
-    (void)str;
-    (void)str1;
-    (void)str2;
-    (void)str3;
-    (void)str4;
-    (void)str5;
-    (void)str6;
-
-    // str[0] = 'a';
-    // str[1] = 'b';
-    // str[2] = 'c';
-    // str[3] = 'd';
-    // str[3] = '\0';
-
-    // ft_printf("str  = %p, '%s'\n", str, str);
-    // ft_printf("str1 = %p, '%s'\n", str1, str1);
-    // ft_printf("str2 = %p\n", str2);
-    // ft_printf("str3 = %p\n", str3);
-    // ft_printf("str4  = %p, '%s'\n", str4, str4);
-    // ft_printf("str5 = %p, '%s'\n", str5, str5);
-    // ft_printf("str6  = %p, '%s'\n", str6, str6);
-
-    // struct rlimit limit;
-    // if (getrlimit(RLIMIT_AS, &limit) == -1)
-    //     return (1);
+	
     ft_printf("PAGESIZE = %d\n", (int)PAGESIZE);
     ft_printf("TINY_S = %d\n", (int)TINY_S);
     ft_printf("SMALL_S = %d\n", (int)SMALL_S);
     ft_printf("TINY_S_MAX_ALLOC = %d\n", (int)TINY_S_MAX_ALLOC);
     ft_printf("SMALL_S_MAX_ALLOC = %d\n", (int)SMALL_S_MAX_ALLOC);
-    
     ft_printf("ALIGNED_DATA = %d\n", (int)ALIGNED_DATA);
     ft_printf("ALIGNED_HEAP = %d\n", (int)ALIGNED_HEAP);
     ft_printf("ALIGNED_LARGE_HEAP = %d\n", (int)ALIGNED_LARGE_HEAP);
     ft_printf("ALIGNED_BLOCK = %d\n", (int)ALIGNED_BLOCK);
     ft_printf("ALIGNED_CHUNK = %d\n", (int)ALIGNED_CHUNK);
 
-    ft_printf("align 32 = %d\n", (int)((size_t)align((void*)32)));
-    
-    ft_printf("\n================== SHOW DEBUG ================\n\n");
+    ft_printf("\n==================== TEST ====================\n\n");
+	malloc_test();
+}
+
+// =================================== TEST ====================================
+
+void	malloc_test()
+{
+	// return ;
+
+	
+	size_t	error	= 0;
+	
+
+	test_error(&error);
+	test_tiny(&error);
+	test_small(&error);
+	
+	ft_printf("TOTAL ERROR : %d\n", error);
+
+	ft_printf("\n================== SHOW DEBUG ================\n\n");
     show_alloc_debug();
     
     ft_printf("\n===================== SHOW ===================\n\n");
     show_alloc_mem();
+
+	
+}
+
+void test_error(size_t *error)
+{
+	size_t	len			= 0;
+	size_t	len_tmp		= 0;
+	size_t	len_init	= g_data ? g_data->total_size : 0;
+	void	*addr;
+
+	ft_printf("--> TEST : error handling\n");
+
+	len_tmp = 0;
+	len += len_tmp;
+	addr = malloc(len_tmp);
+	if (addr && (g_data->total_size - len_init) != len)
+		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+
+	// test avec rlimit
+}
+
+void	test_tiny(size_t *error)
+{
+	size_t	len			= 0;
+	size_t	len_tmp		= 0;
+	size_t	len_init	= g_data ? g_data->total_size : 0;
+	void	*addr;
+
+	ft_printf("--> TEST : tiny heap alloc\n");
+
+	// malloc(16), fill completely a block
+	// check there is no more space in the block
+
+	// (size  + metadata chunk) * 255 * sizeof(char) + metadata block
+	// (16    + 48)             * 255 * 1            + 48             = 16368 bytes
+	// 16368/16384 is the max memory allocatable in tiny
+	for (int i = 0; i != 255; i++)
+	{
+		len_tmp = 16 * sizeof(char);
+		len += len_tmp;
+		addr = malloc(len_tmp);
+		if (addr && (g_data->total_size - len_init) != len)
+			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+	}
+
+	// malloc(112), check if 112 bytes alloc in tiny heap
+	// need minimum 100 alloc
+	for (int i = 0; i != 100; i++)
+	{
+		len_tmp = 112 * sizeof(char);
+		len += len_tmp;
+		addr = malloc(len_tmp);
+		if (addr && (g_data->total_size - len_init) != len)
+			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+	}
+
+	// malloc(2), write "1", result : "1"
+	len_tmp = 2 * sizeof(char);
+	len += len_tmp;
+	addr = malloc(len_tmp);
+	ft_strlcpy(addr, "1", len_tmp);
+	if (addr && (g_data->total_size - len_init) != len && ft_strncmp(addr, "1", len_tmp))
+		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+		
+	// malloc(5), write "Hello", result : "Hello"
+	len_tmp = 5 * sizeof(char);
+	len += len_tmp;
+	addr = malloc(len_tmp);
+	ft_strlcpy(addr, "Hello", len_tmp);
+	if (addr && (g_data->total_size - len_init) != len && ft_strncmp(addr, "Hello", len_tmp))
+		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+
+	// malloc(2), overwrite "Hello", result : "H"
+	len_tmp = 2 * sizeof(char);
+	len += len_tmp;
+	addr = malloc(len_tmp);
+	ft_strlcpy(addr, "Hello", len_tmp);
+	if (addr && (g_data->total_size - len_init) != len && ft_strncmp(addr, "H", len_tmp))
+		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+}
+
+void	test_small(size_t *error)
+{
+	size_t	len			= 0;
+	size_t	len_tmp		= 0;
+	size_t	len_init	= g_data ? g_data->total_size : 0;
+	void	*addr;
+	char	*str;
+
+	ft_printf("--> TEST : small heap alloc\n");
+
+	// malloc(16), fill completely a block
+	// check there is no more space in the block
+	
+	// (size  + metadata chunk) * 127 * sizeof(char) + size + metadata block
+	// (4048  + 48)             * 127 * 1            + 4000 + 48             = 524288 bytes
+	// 524288/524288 is the max memory allocatable in small heap
+	for (int i = 0; i != 127; i++)
+	{
+		len_tmp = 4048 * sizeof(char);
+		len += len_tmp;
+		addr = malloc(len_tmp);
+		if (addr && (g_data->total_size - len_init) != len)
+			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+	}
+	for (int i = 1; i != 2; i++)
+	{
+		len_tmp = 4000 * sizeof(char);
+		len += len_tmp;
+		addr = malloc(len_tmp);
+		if (addr && (g_data->total_size - len_init) != len)
+			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+	}
+
+	// malloc(112), check if 5148 bytes alloc in small 
+	// need minimum 100 alloc
+	for (int i = 1; i != 100; i++)
+	{
+		len_tmp = 5148 * sizeof(char);
+		len += len_tmp;
+		addr = malloc(len_tmp);
+		if (addr && (g_data->total_size - len_init) != len)
+			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+	}
+
+	// malloc(128), write "1111"... , result : "1111"...
+	len_tmp = 128 * sizeof(char);
+	len += len_tmp;
+	str = malloc(len_tmp);
+	if (str && (g_data->total_size - len_init) != len)
+		ft_printf("ERROR : malloc(%d) = %s\n", len_tmp, str,(*error)++);
+	for (int i = 0; i != 127; i++)
+		str[i] = '1';
+	str[len_tmp - 1] = '\0';
+	for (int i = 0; i != 127; i++)
+		if (str[i] != '1')
+			ft_printf("ERROR : malloc(%d) str[%d] = %s,\n", len_tmp, i, str, (*error)++);
+			
+	// malloc(128), write "H", result : "H"
+	len_tmp = 128 * sizeof(char);
+	len += len_tmp;
+	str = malloc(len_tmp);
+	ft_strlcpy(str, "H", len_tmp);
+	if (str && (g_data->total_size - len_init) != len && ft_strncmp(str, "H", len_tmp))
+		ft_printf("ERROR : malloc(%d) = %s\n", len_tmp, str,(*error)++);
 }

@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 19:44:59 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/03 19:21:30 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/06 19:14:55 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,11 @@ void show_alloc_debug()
 static void show_heap(t_heap *heap)
 {
 	t_block	*block	= heap->first_block;
-	size_t	base	= (size_t)block;
 	
 	while (block)
 	{
-		ft_printf("  | - BLOCK :      %p meta(%T) deep(%T)\n", block, (size_t)ALIGNED_BLOCK, (size_t)block - (size_t)base);
+		size_t	base	= (size_t)block;
+		ft_printf("  | - BLOCK :      %p meta(%T) pos(%T)\n", block, (size_t)ALIGNED_BLOCK, (size_t)block);
 		t_chunk *chunk = block->first_chunk;
 		
 		while (chunk)
