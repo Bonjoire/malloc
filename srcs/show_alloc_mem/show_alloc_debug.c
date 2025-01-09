@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 19:44:59 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/06 19:14:55 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/09 15:17:31 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,13 @@ static void show_heap(t_heap *heap)
 	while (block)
 	{
 		size_t	base	= (size_t)block;
-		ft_printf("  | - BLOCK :      %p meta(%T) pos(%T)\n", block, (size_t)ALIGNED_BLOCK, (size_t)block);
+		ft_printf("  | - BLOCK :      %p meta(%T) pos(%T) after(%T)\n", block, (size_t)ALIGNED_BLOCK, (size_t)block, (size_t)block->size_next);
 		t_chunk *chunk = block->first_chunk;
 		
 		while (chunk)
 		{
-			ft_printf("     | - CHUNK :      %p meta(%T) deep(%T) size(%T) align(%T) after(%T)\n", chunk, (size_t)ALIGNED_CHUNK, (size_t)chunk - (size_t)base, chunk->size, (size_t)align((void*)chunk->size), (size_t)chunk->size_next);
-			if (chunk == chunk->next) //////////////////////////////////////////////// chunk->chunk
+			ft_printf("     | - CHUNK :      %p meta(%T) deep(%T) size(%T) align(%T) after(%T)\n", chunk->chunk, (size_t)ALIGNED_CHUNK, (size_t)chunk - (size_t)base, chunk->size, (size_t)align((void*)chunk->size), (size_t)chunk->size_next);
+			if (chunk == chunk->next) //////////////////////////////////////////////// 
 				break ;
 			chunk = chunk->next;
 		}

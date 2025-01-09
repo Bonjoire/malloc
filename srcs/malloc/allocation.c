@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 18:55:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/06 19:17:49 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/09 18:33:19 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size)
 {
-	t_block *block_tmp  = NULL;
+	t_block *block_prev  = NULL;
 	t_block *block      = heap->first_block;
 
 	while (block != NULL)
@@ -23,39 +23,10 @@ void heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size)
 		// create a new chunk and return true, else return false
 		if (try_alloc_new_chunk_if_space_in_block(block, size))
 			return ;
-		block_tmp = block;
+		block_prev = block;
 		block = block->next;
 	}
 
-	// ft_putstr_fd("heap_pagesize ", 1);
-	// ft_putnbr_base_fd((size_t)heap_pagesize, "0123456789", 1);
-	// ft_putstr_fd(" sizeof(size_t) ", 1);
-	// ft_putnbr_base_fd(sizeof(size_t), "0123456789", 1);
-	// ft_putstr_fd("\n", 1);
-
-	// ft_putstr_fd("heap_pagesize ", 1);
-	// ft_putnbr_base_fd((unsigned long)heap_pagesize, "0123456789", 1);
-	// ft_putstr_fd(" sizeof(unsigned long) ", 1);
-	// ft_putnbr_base_fd(sizeof(unsigned long), "0123456789", 1);
-	// ft_putstr_fd("\n", 1);
-	
-	// ft_printf("block tmp %p, %T, ", block_tmp, (size_t)block_tmp);
-	// ft_putnbr_base_fd((size_t)block_tmp, "0123456789", 1);
-	// ft_printf("\n");
-	
-	// ft_printf("block bef %p, %T, ", block, (size_t)block);
-	// ft_putnbr_base_fd((size_t)block, "0123456789", 1);
-	// ft_printf("\n");
-	
-	// ft_printf("heap_pagesize %T, ", (size_t)heap_pagesize);
-	// ft_putnbr_base_fd((size_t)heap_pagesize, "0123456789", 1);
-	// ft_printf("\n");
-
-	// ft_printf("g_data      %p, %T, ", g_data,  (size_t)g_data);
-	// ft_putnbr_base_fd((size_t)g_data, "0123456789", 1);
-	// ft_printf("\n");
-
-	// heap_pagesize
 	block = (t_block *)mmap(NULL, (size_t)heap_pagesize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 	if (block == MAP_FAILED)
 	{
@@ -63,31 +34,36 @@ void heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size)
 		return ;
 	}
 
-	// ft_printf("block after %p, %T, ", block, (size_t)block);
-	// ft_putnbr_base_fd((size_t)block, "0123456789", 1);
-	// ft_printf("\n");
-
-	if (block_tmp != NULL)
-		block_tmp->next = block;
+	// Set start position of the block
+	if (block_prev != NULL)
+		block_prev->next = block;
 	else
 		heap->first_block = block;
-	block->next = NULL;
-	block->free_size = heap_pagesize - ALIGNED_BLOCK;
 
-	chunk_alloc(block, size);
+	block->free_size = heap_pagesize - ALIGNED_BLOCK;
+	block->size_next = 0;
+	block->next = NULL;
+
+	chunk_alloc(block, size, NULL);
 }
 
-void    chunk_alloc(t_block *block, size_t size)
+void    chunk_alloc(t_block *block, size_t size, t_chunk *chunk_next)
 {
 	block->first_chunk          = (t_chunk *)((size_t)block + ALIGNED_BLOCK);
 	block->first_chunk->chunk   = (t_chunk *)((size_t)block->first_chunk + ALIGNED_CHUNK);
 	
 	block->first_chunk->prev = NULL;
-	block->first_chunk->next = NULL;
+	block->first_chunk->next = chunk_next;
 	
 	block->first_chunk->size = size;
 	block->free_size -= (size_t)align((void *)ALIGNED_CHUNK + block->first_chunk->size);
-	block->first_chunk->size_next = block->free_size;
+	if (chunk_next)
+	{
+		block->first_chunk->size_next = block->size_next - (size_t)align((void *)ALIGNED_CHUNK + block->first_chunk->size);
+	}
+	else
+		block->first_chunk->size_next = block->free_size;
+	block->size_next = 0;
 	
 	g_data->addr_return = block->first_chunk->chunk;
 	g_data->total_size += size;
@@ -101,6 +77,13 @@ bool    try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size)
 	// Check if there is enough space in the block
 	if (block && block->free_size < (size_t)align((void *)ALIGNED_CHUNK + size))
 		return (false);
+
+	// Allocate a new chunk at the beginning of the block
+	if ((size_t)align((void*)ALIGNED_CHUNK + size) <= block->size_next)
+	{
+		chunk_alloc(block, size, chunk);
+		return (true);
+	}
 
 	while (chunk)
 	{
@@ -116,7 +99,7 @@ bool    try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size)
 
 	chunk = (t_chunk*)((size_t)chunk_tmp->chunk + (size_t)align((void*)(size_t)chunk_tmp + chunk_tmp->size) - (size_t)chunk_tmp);
 	chunk->chunk = (t_chunk *)((size_t)chunk + ALIGNED_CHUNK);
-	
+
 	chunk_tmp->next = chunk;
 	chunk->prev = chunk_tmp;
 	chunk->next = NULL;
@@ -219,9 +202,9 @@ bool    try_alloc_new_chunk_if_space_in_chunk(t_block* block, t_chunk *prev_chun
 	
 	new_chunk->size = size;
 
-	ft_printf("======= BEFORE =======\n");
-	ft_printf("prev_chunk->size_next %T - %T\n", prev_chunk->size_next, (size_t)align((void*)ALIGNED_CHUNK + new_chunk->size));
-	ft_printf("new_chunk->size_next %T\n", new_chunk->size_next);
+	// ft_printf("======= BEFORE =======\n");
+	// ft_printf("prev_chunk->size_next %T - %T\n", prev_chunk->size_next, (size_t)align((void*)ALIGNED_CHUNK + new_chunk->size));
+	// ft_printf("new_chunk->size_next %T\n", new_chunk->size_next);
 
 	if (prev_chunk->size_next && prev_chunk->size)
 		new_chunk->size_next = prev_chunk->size_next - (size_t)align((void*)ALIGNED_CHUNK + new_chunk->size);
@@ -232,9 +215,9 @@ bool    try_alloc_new_chunk_if_space_in_chunk(t_block* block, t_chunk *prev_chun
 	if (prev_chunk->next)
 		prev_chunk->size_next = 0;
 
-	ft_printf("======= AFTER =======\n");
-	ft_printf("prev_chunk->size_next %T\n", prev_chunk->size_next);
-	ft_printf("new_chunk->size_next %T\n", new_chunk->size_next);
+	// ft_printf("======= AFTER =======\n");
+	// ft_printf("prev_chunk->size_next %T\n", prev_chunk->size_next);
+	// ft_printf("new_chunk->size_next %T\n", new_chunk->size_next);
 
 	g_data->addr_return = new_chunk->chunk;
 	g_data->total_size += size;

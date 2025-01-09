@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 18:23:51 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/06 19:54:36 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/09 15:29:37 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ typedef struct block
 	struct chunk		*first_chunk;
 	int					num;
 	size_t				free_size;
+	size_t				size_next;
 }					t_block;
 
 typedef struct chunk
@@ -99,7 +100,7 @@ void	free(void *ptr);
 void*	align(void *ptr_to_align);
 void	heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size);
 void	large_alloc(t_large_heap *heap, size_t size);
-void	chunk_alloc(t_block *block, size_t size);
+void    chunk_alloc(t_block *block, size_t size, t_chunk *chunk_next);
 bool	try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size);
 bool    try_alloc_new_chunk_if_space_in_chunk(t_block* block, t_chunk *chunk, size_t size);
 

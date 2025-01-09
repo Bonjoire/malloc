@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 13:40:16 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/06 17:39:55 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/09 18:36:40 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ t_data *g_data = NULL;
 
 void *malloc(size_t size)
 {
-	ft_printf("\n========= MALLOC ========\n");
-    ft_printf("size %T bytes\n", size);
+	// ft_printf("\n========= MALLOC ========\n");
+    // ft_printf("size %T bytes\n", size);
 	
     if (g_data == NULL)
     {

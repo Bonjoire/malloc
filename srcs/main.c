@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 18:26:59 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/06 20:39:20 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/09 18:37:46 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,10 @@ void	malloc_test()
 	
 	size_t	error	= 0;
 	
-	// test_error(&error);
-	// test_tiny(&error);
-	// test_small(&error);
 	test_free(&error);
+	test_error(&error);
+	test_tiny(&error);
+	test_small(&error);
 	
 	ft_printf("TOTAL ERROR : %d\n", error);
 
@@ -60,7 +60,7 @@ void	malloc_test()
     // show_alloc_mem();
 }
 
-void test_error(size_t *error)
+void	test_error(size_t *error)
 {
 	size_t	len			= 0;
 	size_t	len_tmp		= 0;
@@ -211,39 +211,66 @@ void	test_small(size_t *error)
 
 void	test_free(size_t *error)
 {
-	char *str1 = malloc(128 * sizeof(char));
-	char *str2 = malloc(1000 * sizeof(char));
-	char *str3 = malloc(2000 * sizeof(char));
+	(void)error;	
+	ft_printf("--> TEST : free\n");
 
-	(void)str1;
-	(void)str2;
-	(void)str3;
-	(void)error;
+	// Free first chunk next to block
+	{	
+		char *str1 = malloc(500 * sizeof(char));
+		char *str2 = malloc(1000 * sizeof(char));
 
-	ft_printf("\n================== SHOW DEBUG ================\n\n");
-    show_alloc_debug();
-	ft_printf("\n");
-	free(str1);
+		free(str1);
+		char *str3 = malloc(128 * sizeof(char));
+		char *str4 = malloc(128 * sizeof(char));
+		if (g_data->total_size != (128 * 2 + 1000))
+			ft_printf("ERROR : total_size = %d\n", g_data->total_size,(*error)++);
+		
+		free(str2);
+		free(str3);
+		free(str4);
+		if (g_data->total_size != 0)
+			ft_printf("ERROR : total_size = %d\n", g_data->total_size,(*error)++);
+	}
 
-    show_alloc_debug();
-	// str2 = malloc(200 * sizeof(char));
-	// ft_printf("\n");
-	// (void)str2;
+	// Free chunk between chunks
+	{
+		char *str1 = malloc(128 * sizeof(char));
+		char *str2 = malloc(2500 * sizeof(char));
+		char *str3 = malloc(128 * sizeof(char));
+		
+		free(str2);
+		char *str4 = malloc(500 * sizeof(char));
+		char *str5 = malloc(1000 * sizeof(char));
+		if (g_data->total_size != (128 * 2 + 500 + 1000))
+			ft_printf("ERROR : total_size = %d\n", g_data->total_size,(*error)++);
 
-    // show_alloc_debug();
-	// char *str4 = malloc(200 * sizeof(char));
-	// ft_printf("\n");
-	// (void)str4;
+		free(str1);
+		free(str3);
+		free(str4);
+		free(str5);
+		if (g_data->total_size != 0)
+			ft_printf("ERROR : total_size = %d\n", g_data->total_size,(*error)++);
+	}
 
-	// show_alloc_debug();
-	// char *str5 = malloc(300 * sizeof(char));
-	// ft_printf("\n");
-	// (void)str5;
+	// Free last chunk of a block
+	{
+		char *str1 = malloc(128 * sizeof(char));
+		char *str2 = malloc(2500 * sizeof(char));
+		char *str3 = malloc(128 * sizeof(char));
 
-	// show_alloc_debug();
-	// char *str6 = malloc(144 * sizeof(char));
-	// ft_printf("\n");
-	// (void)str6;
+		free(str3);
+		char *str4 = malloc(500 * sizeof(char));
+		char *str5 = malloc(3000 * sizeof(char));
+		if (g_data->total_size != (128 + 2500 + 3000 + 500))
+			ft_printf("ERROR : total_size = %d\n", g_data->total_size,(*error)++);
 
-    show_alloc_debug();
+		free(str1);
+		free(str2);
+		free(str4);
+		free(str5);
+		if (g_data->total_size != 0)
+			ft_printf("ERROR : total_size = %d\n", g_data->total_size,(*error)++);
+	}
+
+	// test munmap()
 }
