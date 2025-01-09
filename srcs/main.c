@@ -16,6 +16,7 @@ void	malloc_test();
 void	test_error();
 void	test_tiny(size_t *error);
 void	test_small(size_t *error);
+void	test_free(size_t *error);
 
 int main()
 {   
@@ -45,20 +46,18 @@ void	malloc_test()
 	
 	size_t	error	= 0;
 	
-
-	test_error(&error);
-	test_tiny(&error);
-	test_small(&error);
+	// test_error(&error);
+	// test_tiny(&error);
+	// test_small(&error);
+	test_free(&error);
 	
 	ft_printf("TOTAL ERROR : %d\n", error);
 
 	ft_printf("\n================== SHOW DEBUG ================\n\n");
-    show_alloc_debug();
+    // show_alloc_debug();
     
     ft_printf("\n===================== SHOW ===================\n\n");
-    show_alloc_mem();
-
-	
+    // show_alloc_mem();
 }
 
 void test_error(size_t *error)
@@ -67,6 +66,7 @@ void test_error(size_t *error)
 	size_t	len_tmp		= 0;
 	size_t	len_init	= g_data ? g_data->total_size : 0;
 	void	*addr;
+	(void)error;
 
 	ft_printf("--> TEST : error handling\n");
 
@@ -75,6 +75,8 @@ void test_error(size_t *error)
 	addr = malloc(len_tmp);
 	if (addr && (g_data->total_size - len_init) != len)
 		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+
+	// free(addr);
 
 	// test avec rlimit
 }
@@ -85,6 +87,7 @@ void	test_tiny(size_t *error)
 	size_t	len_tmp		= 0;
 	size_t	len_init	= g_data ? g_data->total_size : 0;
 	void	*addr;
+	(void)error;
 
 	ft_printf("--> TEST : tiny heap alloc\n");
 
@@ -146,6 +149,7 @@ void	test_small(size_t *error)
 	size_t	len_init	= g_data ? g_data->total_size : 0;
 	void	*addr;
 	char	*str;
+	(void)error;
 
 	ft_printf("--> TEST : small heap alloc\n");
 
@@ -203,4 +207,43 @@ void	test_small(size_t *error)
 	ft_strlcpy(str, "H", len_tmp);
 	if (str && (g_data->total_size - len_init) != len && ft_strncmp(str, "H", len_tmp))
 		ft_printf("ERROR : malloc(%d) = %s\n", len_tmp, str,(*error)++);
+}
+
+void	test_free(size_t *error)
+{
+	char *str1 = malloc(128 * sizeof(char));
+	char *str2 = malloc(1000 * sizeof(char));
+	char *str3 = malloc(2000 * sizeof(char));
+
+	(void)str1;
+	(void)str2;
+	(void)str3;
+	(void)error;
+
+	ft_printf("\n================== SHOW DEBUG ================\n\n");
+    show_alloc_debug();
+	ft_printf("\n");
+	free(str1);
+
+    show_alloc_debug();
+	// str2 = malloc(200 * sizeof(char));
+	// ft_printf("\n");
+	// (void)str2;
+
+    // show_alloc_debug();
+	// char *str4 = malloc(200 * sizeof(char));
+	// ft_printf("\n");
+	// (void)str4;
+
+	// show_alloc_debug();
+	// char *str5 = malloc(300 * sizeof(char));
+	// ft_printf("\n");
+	// (void)str5;
+
+	// show_alloc_debug();
+	// char *str6 = malloc(144 * sizeof(char));
+	// ft_printf("\n");
+	// (void)str6;
+
+    show_alloc_debug();
 }

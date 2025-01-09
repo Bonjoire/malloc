@@ -92,8 +92,11 @@ typedef struct chunk
 //	malloc.c
 void	*malloc(size_t size);
 
-// allocatoin.c
-void	*align(void *ptr_to_align);
+//	free.c
+void	free(void *ptr);
+
+// allocation.c
+void*	align(void *ptr_to_align);
 void	heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size);
 void	large_alloc(t_large_heap *heap, size_t size);
 void	chunk_alloc(t_block *block, size_t size);
@@ -105,13 +108,13 @@ int		data_init(t_data **data);
 void	tiny_init(t_data **data);
 void	small_init(t_data **data);
 
-// utils.c
-void	*align(void *ptr_to_align);
+// utils/*.c
+void			*align(void *ptr_to_align);
+t_chunk			*find_address_heap(void *addr, t_block **parent_block);
+t_large_heap    *find_address_large_heap(void *addr);
 
-//	show_alloc_mem.c
+//	show_alloc_mem/*.c
 void	show_alloc_mem();
-
-//	show_alloc_debug.c 
-void	show_alloc_debug(); ////// remove from makefile berofe pushing ?
+void	show_alloc_debug();
 
 #endif

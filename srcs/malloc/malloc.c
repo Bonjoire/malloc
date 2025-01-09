@@ -16,8 +16,8 @@ t_data *g_data = NULL;
 
 void *malloc(size_t size)
 {
-	// ft_printf("========= MALLOC ========\n");
-    // ft_printf("size %T bytes\n", size);
+	ft_printf("\n========= MALLOC ========\n");
+    ft_printf("size %T bytes\n", size);
 	
     if (g_data == NULL)
     {

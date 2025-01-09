@@ -26,9 +26,11 @@ OBJ_DIR		= obj
 SRC			=	srcs/malloc/malloc.c \
 				srcs/malloc/allocation.c \
 				srcs/malloc/init.c \
-				srcs/utils.c \
+				srcs/free/free.c \
 				srcs/show_alloc_mem/show_alloc_mem.c \
 				srcs/show_alloc_mem/show_alloc_debug.c \
+				srcs/utils/align.c \
+				srcs/utils/find_address.c \
 
 OBJ			= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
