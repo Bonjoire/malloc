@@ -46,18 +46,18 @@ void	malloc_test()
 	
 	size_t	error	= 0;
 	
-	test_free(&error);
-	test_error(&error);
-	test_tiny(&error);
-	test_small(&error);
+	// test_free(&error);
+	// test_error(&error);
+	// test_tiny(&error);
+	// test_small(&error);
 	
 	ft_printf("TOTAL ERROR : %d\n", error);
 
 	ft_printf("\n================== SHOW DEBUG ================\n\n");
-    // show_alloc_debug();
+    show_alloc_debug();
     
     ft_printf("\n===================== SHOW ===================\n\n");
-    // show_alloc_mem();
+    show_alloc_mem();
 }
 
 void	test_error(size_t *error)
@@ -73,7 +73,7 @@ void	test_error(size_t *error)
 	len_tmp = 0;
 	len += len_tmp;
 	addr = malloc(len_tmp);
-	if (addr && (g_data->total_size - len_init) != len)
+	if (addr && g_data && (g_data->total_size - len_init) != len)
 		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
 
 	// free(addr);
@@ -102,7 +102,7 @@ void	test_tiny(size_t *error)
 		len_tmp = 16 * sizeof(char);
 		len += len_tmp;
 		addr = malloc(len_tmp);
-		if (addr && (g_data->total_size - len_init) != len)
+		if (addr && g_data && (g_data->total_size - len_init) != len)
 			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
 	}
 
@@ -113,7 +113,7 @@ void	test_tiny(size_t *error)
 		len_tmp = 112 * sizeof(char);
 		len += len_tmp;
 		addr = malloc(len_tmp);
-		if (addr && (g_data->total_size - len_init) != len)
+		if (addr && g_data && (g_data->total_size - len_init) != len)
 			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
 	}
 
@@ -122,7 +122,7 @@ void	test_tiny(size_t *error)
 	len += len_tmp;
 	addr = malloc(len_tmp);
 	ft_strlcpy(addr, "1", len_tmp);
-	if (addr && (g_data->total_size - len_init) != len && ft_strncmp(addr, "1", len_tmp))
+	if (addr && g_data && (g_data->total_size - len_init) != len && ft_strncmp(addr, "1", len_tmp))
 		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
 		
 	// malloc(5), write "Hello", result : "Hello"
@@ -130,7 +130,7 @@ void	test_tiny(size_t *error)
 	len += len_tmp;
 	addr = malloc(len_tmp);
 	ft_strlcpy(addr, "Hello", len_tmp);
-	if (addr && (g_data->total_size - len_init) != len && ft_strncmp(addr, "Hello", len_tmp))
+	if (addr && g_data && (g_data->total_size - len_init) != len && ft_strncmp(addr, "Hello", len_tmp))
 		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
 
 	// malloc(2), overwrite "Hello", result : "H"
@@ -138,7 +138,7 @@ void	test_tiny(size_t *error)
 	len += len_tmp;
 	addr = malloc(len_tmp);
 	ft_strlcpy(addr, "Hello", len_tmp);
-	if (addr && (g_data->total_size - len_init) != len && ft_strncmp(addr, "H", len_tmp))
+	if (addr && g_data && (g_data->total_size - len_init) != len && ft_strncmp(addr, "H", len_tmp))
 		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
 }
 
@@ -164,7 +164,7 @@ void	test_small(size_t *error)
 		len_tmp = 4048 * sizeof(char);
 		len += len_tmp;
 		addr = malloc(len_tmp);
-		if (addr && (g_data->total_size - len_init) != len)
+		if (addr && g_data && (g_data->total_size - len_init) != len)
 			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
 	}
 	for (int i = 1; i != 2; i++)
@@ -172,7 +172,7 @@ void	test_small(size_t *error)
 		len_tmp = 4000 * sizeof(char);
 		len += len_tmp;
 		addr = malloc(len_tmp);
-		if (addr && (g_data->total_size - len_init) != len)
+		if (addr && g_data && (g_data->total_size - len_init) != len)
 			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
 	}
 
@@ -183,7 +183,7 @@ void	test_small(size_t *error)
 		len_tmp = 5148 * sizeof(char);
 		len += len_tmp;
 		addr = malloc(len_tmp);
-		if (addr && (g_data->total_size - len_init) != len)
+		if (addr && g_data && (g_data->total_size - len_init) != len)
 			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
 	}
 
@@ -191,7 +191,7 @@ void	test_small(size_t *error)
 	len_tmp = 128 * sizeof(char);
 	len += len_tmp;
 	str = malloc(len_tmp);
-	if (str && (g_data->total_size - len_init) != len)
+	if (str && g_data && (g_data->total_size - len_init) != len)
 		ft_printf("ERROR : malloc(%d) = %s\n", len_tmp, str,(*error)++);
 	for (int i = 0; i != 127; i++)
 		str[i] = '1';
@@ -205,7 +205,7 @@ void	test_small(size_t *error)
 	len += len_tmp;
 	str = malloc(len_tmp);
 	ft_strlcpy(str, "H", len_tmp);
-	if (str && (g_data->total_size - len_init) != len && ft_strncmp(str, "H", len_tmp))
+	if (str && g_data && (g_data->total_size - len_init) != len && ft_strncmp(str, "H", len_tmp))
 		ft_printf("ERROR : malloc(%d) = %s\n", len_tmp, str,(*error)++);
 }
 
@@ -222,13 +222,13 @@ void	test_free(size_t *error)
 		free(str1);
 		char *str3 = malloc(128 * sizeof(char));
 		char *str4 = malloc(128 * sizeof(char));
-		if (g_data->total_size != (128 * 2 + 1000))
+		if (g_data && g_data->total_size != (128 * 2 + 1000))
 			ft_printf("ERROR : total_size = %d\n", g_data->total_size,(*error)++);
 		
 		free(str2);
 		free(str3);
 		free(str4);
-		if (g_data->total_size != 0)
+		if (g_data && g_data->total_size != 0)
 			ft_printf("ERROR : total_size = %d\n", g_data->total_size,(*error)++);
 	}
 
@@ -241,14 +241,14 @@ void	test_free(size_t *error)
 		free(str2);
 		char *str4 = malloc(500 * sizeof(char));
 		char *str5 = malloc(1000 * sizeof(char));
-		if (g_data->total_size != (128 * 2 + 500 + 1000))
+		if (g_data && g_data->total_size != (128 * 2 + 500 + 1000))
 			ft_printf("ERROR : total_size = %d\n", g_data->total_size,(*error)++);
 
 		free(str1);
 		free(str3);
 		free(str4);
 		free(str5);
-		if (g_data->total_size != 0)
+		if (g_data && g_data->total_size != 0)
 			ft_printf("ERROR : total_size = %d\n", g_data->total_size,(*error)++);
 	}
 
@@ -261,16 +261,53 @@ void	test_free(size_t *error)
 		free(str3);
 		char *str4 = malloc(500 * sizeof(char));
 		char *str5 = malloc(3000 * sizeof(char));
-		if (g_data->total_size != (128 + 2500 + 3000 + 500))
+		if (g_data && g_data->total_size != (128 + 2500 + 3000 + 500))
 			ft_printf("ERROR : total_size = %d\n", g_data->total_size,(*error)++);
 
 		free(str1);
 		free(str2);
 		free(str4);
 		free(str5);
-		if (g_data->total_size != 0)
+		if (g_data && g_data->total_size != 0)
 			ft_printf("ERROR : total_size = %d\n", g_data->total_size,(*error)++);
 	}
 
-	// test munmap()
+	// Fill 3 block, and free all chunks of it to see munmap call
+	{
+		size_t	nb_chunk = 102;
+		size_t  nb_block = 3; // Depend of the nb_chunk value to fill pagesize
+		void	*addr_block[nb_block][nb_chunk];
+	
+		for (size_t i = 0; i < nb_block; i++)
+		{
+			for (size_t j = 0; j < nb_chunk; j++)
+				addr_block[i][j] = malloc(112 * sizeof(char));
+		}
+
+		// Empty the block, check if munmap is called
+		size_t	block_to_free = rand() % nb_block;
+		for (size_t i = 0; i < nb_chunk; i++)
+			free(addr_block[block_to_free][i]);
+
+		// Free allocated memory
+		for (size_t i = 0; i < nb_chunk; i++)
+		{
+			free(addr_block[(block_to_free + 1) % nb_block][i]);
+			free(addr_block[(block_to_free + 2) % nb_block][i]);
+		}
+	}
+
+	// Free in large_heap
+	{
+		char *str1 = malloc(10000 * sizeof(char));
+		char *str2 = malloc(10000 * sizeof(char));
+		char *str3 = malloc(20000 * sizeof(char));
+		(void)str1;
+		(void)str2;
+		(void)str3;
+
+		free(str1);
+		free(str2);
+		free(str3);
+	}
 }

@@ -45,7 +45,7 @@ void show_alloc_mem()
     ft_putstr_fd(" bytes\n", 1);
 	
 	if (g_data->total_size != total) ////////////// DEBUG
-		ft_putstr_fd("| ERROR : total_size != total\n", 1); //////////////// DEBUG
+		ft_printf("| ERROR : total_size != total, %T, %T\n", g_data->total_size, total); //////////////// DEBUG
 
 	ft_putstr_fd("|\n", 1);
     ft_putstr_fd("| ==========================\n\n", 1);

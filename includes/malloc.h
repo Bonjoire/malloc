@@ -73,10 +73,10 @@ typedef struct large_heap
 
 typedef struct block
 {
+	struct heap			*heap;
 	struct block		*prev;
 	struct block		*next;
 	struct chunk		*first_chunk;
-	int					num;
 	size_t				free_size;
 	size_t				size_next;
 }					t_block;
@@ -95,6 +95,7 @@ void	*malloc(size_t size);
 
 //	free.c
 void	free(void *ptr);
+void    free_block_if_empty(t_block* block);
 
 // allocation.c
 void*	align(void *ptr_to_align);
@@ -102,7 +103,7 @@ void	heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size);
 void	large_alloc(t_large_heap *heap, size_t size);
 void    chunk_alloc(t_block *block, size_t size, t_chunk *chunk_next);
 bool	try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size);
-bool    try_alloc_new_chunk_if_space_in_chunk(t_block* block, t_chunk *chunk, size_t size);
+bool    try_alloc_new_chunk_if_space_after_chunk(t_block* block, t_chunk *chunk, size_t size);
 
 //	init.c
 int		data_init(t_data **data);

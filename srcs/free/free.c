@@ -34,26 +34,6 @@ void free(void *ptr)
         t_chunk *prev_chunk = chunk->prev;
         t_chunk *next_chunk = chunk->next;
 
-        // ft_printf("chunk addr(%p), block(%p)\n", chunk->chunk, parent_block);
-        // ft_printf("------ BEFORE -------\n");
-        // if (prev_chunk)
-        // 	ft_printf("prev_chunk->prev       %p, %T\n", prev_chunk->prev, (size_t)prev_chunk->prev);
-        // ft_printf("prev_chunk             %p, %T\n", prev_chunk, (size_t)prev_chunk);
-        // ft_printf("prev_chunk->next       %p, %T\n", prev_chunk->next, (size_t)prev_chunk->next);
-
-        // ft_printf("-----------------------\n");
-        // if (chunk)
-        // 	ft_printf("chunk->prev       %p, %T\n", chunk->prev, (size_t)chunk->prev);
-        // ft_printf("chunk             %p, %T\n", chunk, (size_t)chunk);
-        // ft_printf("chunk->next       %p, %T\n", chunk->next, (size_t)chunk->next);
-
-        // ft_printf("-----------------------\n");
-        // if (next_chunk)
-        // 	ft_printf("next_chunk->prev       %p, %T\n", next_chunk->prev, (size_t)next_chunk->prev);
-        // ft_printf("next_chunk             %p, %T\n", next_chunk, (size_t)next_chunk);
-        // if (next_chunk)
-        //     ft_printf("next_chunk->next       %p, %T\n", next_chunk->next, (size_t)next_chunk->next);
-
 		// Set next chunk
         if (next_chunk)
             next_chunk->prev = prev_chunk;
@@ -63,7 +43,6 @@ void free(void *ptr)
             prev_chunk->size_next += (size_t)align((void*)ALIGNED_CHUNK + chunk->size) + chunk->size_next;
 		else if (chunk->chunk == parent_block->first_chunk->chunk)
 			parent_block->size_next += (size_t)align((void*)ALIGNED_CHUNK + chunk->size) + chunk->size_next;
-       
 		parent_block->free_size += (size_t)align((void*)ALIGNED_CHUNK + chunk->size);
 		g_data->total_size -= chunk->size;
 
@@ -73,7 +52,7 @@ void free(void *ptr)
 		else if (chunk->chunk == parent_block->first_chunk->chunk)
 			parent_block->first_chunk = next_chunk;
 	   
-		// Empty chunk
+		// Empty the chunk
 		chunk->size_next = 0;
 		chunk->size = 0;
         chunk->chunk = NULL;
@@ -81,29 +60,41 @@ void free(void *ptr)
         chunk->prev = NULL;
         chunk = NULL;
 
-        // ft_printf("\n------ AFTER -------\n");
-        // if (prev_chunk)
-        // 	ft_printf("prev_chunk->prev       %p, %T\n", prev_chunk->prev, (size_t)prev_chunk->prev);
-        // ft_printf("prev_chunk             %p, %T\n", prev_chunk, (size_t)prev_chunk);
-        // ft_printf("prev_chunk->next       %p, %T\n", prev_chunk->next, (size_t)prev_chunk->next);
-
-        // ft_printf("-----------------------\n");
-        // if (chunk)
-        // {
-        // 	ft_printf("chunk->prev       %p, %T\n", chunk->prev, (size_t)chunk->prev);
-        //     ft_printf("chunk             %p, %T\n", chunk, (size_t)chunk);
-        //     ft_printf("chunk->next       %p, %T\n", chunk->next, (size_t)chunk->next);
-        // }
-
-        // ft_printf("-----------------------\n");
-        // if (next_chunk)
-        // 	ft_printf("next_chunk->prev       %p, %T\n", next_chunk->prev, (size_t)next_chunk->prev);
-        // ft_printf("next_chunk             %p, %T\n", next_chunk, (size_t)next_chunk);
-        // if (next_chunk)
-        //     ft_printf("next_chunk->next       %p, %T\n", next_chunk->next, (size_t)next_chunk->next);
+        free_block_if_empty(parent_block); // Est ce que on throw une erreur si munmap == NULL ?
     }
     else if (large_heap)
     {
-        ft_printf("large_heap addr = %p\n", large_heap->start);
+        // struct	large_heap	*prev;
+        // struct	large_heap	*next;
+        // void				*start;
+        // size_t				size;
+
+        // Set prev and next
+        if (large_heap->prev)
+            large_heap->prev->next = large_heap->next;
+        else
+            g_data->large_heap = large_heap->next;
+        if (large_heap->next)
+            large_heap->next->prev = large_heap->prev;
+
+        g_data->total_size -= large_heap->size;
+
+        munmap(large_heap, large_heap->size);
+    }
+    else
+        ft_printf("free(): invalid pointer\n", ptr);
+}
+
+void    free_block_if_empty(t_block* block)
+{
+    if (block && block->first_chunk == NULL)
+    {
+        if (block->prev)
+            block->prev->next = block->next;
+        else   
+            block->heap->first_block = block->next;
+        if (block->next)
+            block->next->prev = block->prev;
+        munmap(block, block->heap->pagesize);
     }
 }

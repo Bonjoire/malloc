@@ -36,10 +36,14 @@ void heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size)
 
 	// Set start position of the block
 	if (block_prev != NULL)
+	{
 		block_prev->next = block;
+		block->prev = block_prev;
+	}
 	else
 		heap->first_block = block;
 
+	block->heap = heap;
 	block->free_size = heap_pagesize - ALIGNED_BLOCK;
 	block->size_next = 0;
 	block->next = NULL;
@@ -87,7 +91,7 @@ bool    try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size)
 
 	while (chunk)
 	{
-		if (try_alloc_new_chunk_if_space_in_chunk(block, chunk, size))
+		if (try_alloc_new_chunk_if_space_after_chunk(block, chunk, size))
 			return (true);
 		chunk_tmp = chunk;
 		chunk = chunk->next;
@@ -114,7 +118,7 @@ bool    try_alloc_new_chunk_if_space_in_block(t_block *block, size_t size)
 	return (true);
 }
 
-bool    try_alloc_new_chunk_if_space_in_chunk(t_block* block, t_chunk *prev_chunk, size_t size)
+bool    try_alloc_new_chunk_if_space_after_chunk(t_block* block, t_chunk *prev_chunk, size_t size)
 {
 	// ft_printf("prev_chunk->size_next %T\n", prev_chunk->size_next);
 	// ft_printf("size %T\n", (size_t)align((void*)size));
