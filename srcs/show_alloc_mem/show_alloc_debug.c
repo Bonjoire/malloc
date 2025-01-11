@@ -45,7 +45,10 @@ static void show_heap(t_heap *heap)
 		
 		while (chunk)
 		{
+			ft_printf("             / ->prev %p\n", chunk->prev ? (chunk->prev->chunk ? chunk->prev->chunk : NULL) : NULL);
 			ft_printf("     | - CHUNK :      %p meta(%T) deep(%T) size(%T) align(%T) after(%T)\n", chunk->chunk, (size_t)ALIGNED_CHUNK, (size_t)chunk - (size_t)base, chunk->size, (size_t)align((void*)chunk->size), (size_t)chunk->size_next);
+			ft_printf("             \\ ->next %p\n", chunk->next ? (chunk->next->chunk ? chunk->next->chunk : NULL) : NULL);
+			
 			if (chunk == chunk->next) //////////////////////////////////////////////// 
 				break ;
 			chunk = chunk->next;
@@ -63,13 +66,16 @@ static void show_large_heap(t_large_heap *heap)
 	
 	while (large_heap)
 	{
+		ft_printf("              / ->prev %p\n", large_heap->prev ? (large_heap->prev->start ? large_heap->prev->start : NULL) : NULL);
 		
-		ft_printf("  | - BLOCK :      (16)%p, (10)%T ", large_heap, (size_t)large_heap);
+		ft_printf("  | - BLOCK :      (16)%p, (10)%T ", large_heap->start, (size_t)large_heap->start);
 		if ((size_t)tmp < (size_t)large_heap)
 			ft_printf("diff(%T)", (size_t)large_heap - (size_t)tmp);
 		else
 			ft_printf("diff(%T)", (size_t)tmp - (size_t)large_heap);
 		ft_printf(" meta(%T) size(%T) align(%T)\n", (size_t)ALIGNED_LARGE_HEAP, large_heap->size, (size_t)align((void*)large_heap->size));
+
+		ft_printf("              \\ ->next %p\n", large_heap->next ? (large_heap->next->start ? large_heap->next->start : NULL) : NULL);
 
 		tmp = large_heap;
 		large_heap = large_heap->next;

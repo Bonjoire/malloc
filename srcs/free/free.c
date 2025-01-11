@@ -34,6 +34,28 @@ void free(void *ptr)
         t_chunk *prev_chunk = chunk->prev;
         t_chunk *next_chunk = chunk->next;
 
+        // ft_printf("++++ BEFORE FREE ++++\n");
+        // if (prev_chunk && prev_chunk->prev)
+        //     ft_printf("prev_chunk->prev = %p\n", prev_chunk->prev);
+        // if (prev_chunk)
+        //     ft_printf("prev_chunk       = %p\n", prev_chunk);
+        // if (prev_chunk && prev_chunk->next)
+        //     ft_printf("prev_chunk->next = %p\n\n", prev_chunk->next);
+
+        // if (chunk && chunk->prev)
+        //     ft_printf("chunk->prev = %p\n", chunk->prev);
+        // if (chunk)
+        //     ft_printf("chunk       = %p\n", chunk);
+        // if (chunk && chunk->next)
+        //     ft_printf("chunk->next = %p\n\n", chunk->next);
+
+        // if (next_chunk && next_chunk->prev)
+        //     ft_printf("next_chunk->prev = %p\n", next_chunk->prev);
+        // if (next_chunk)
+        //     ft_printf("next_chunk       = %p\n", next_chunk);
+        // if (next_chunk && next_chunk->next)
+        //     ft_printf("next_chunk->next = %p\n\n", next_chunk->next);
+
 		// Set next chunk
         if (next_chunk)
             next_chunk->prev = prev_chunk;
@@ -46,11 +68,36 @@ void free(void *ptr)
 		parent_block->free_size += (size_t)align((void*)ALIGNED_CHUNK + chunk->size);
 		g_data->total_size -= chunk->size;
 
+
 	   	// Set prev chunk (or prev block)
         if (prev_chunk)
             prev_chunk->next = next_chunk;
 		else if (chunk->chunk == parent_block->first_chunk->chunk)
 			parent_block->first_chunk = next_chunk;
+        else
+            ft_printf("free(): invalid pointer\n", ptr); // Should never happen
+
+        // ft_printf("++++ AFTER FREE ++++\n");
+        // if (prev_chunk && prev_chunk->prev)
+        //     ft_printf("prev_chunk->prev = %p\n", prev_chunk->prev);
+        // if (prev_chunk)
+        //     ft_printf("prev_chunk       = %p\n", prev_chunk);
+        // if (prev_chunk && prev_chunk->next)
+        //     ft_printf("prev_chunk->next = %p\n\n", prev_chunk->next);
+
+        // if (chunk && chunk->prev)
+        //     ft_printf("chunk->prev = %p\n", chunk->prev);
+        // if (chunk)
+        //     ft_printf("chunk       = %p\n", chunk);
+        // if (chunk && chunk->next)
+        //     ft_printf("chunk->next = %p\n\n", chunk->next);
+
+        // if (next_chunk && next_chunk->prev)
+        //     ft_printf("next_chunk->prev = %p\n", next_chunk->prev);
+        // if (next_chunk)
+        //     ft_printf("next_chunk       = %p\n", next_chunk);
+        // if (next_chunk && next_chunk->next)
+        //     ft_printf("next_chunk->next = %p\n\n", next_chunk->next);
 	   
 		// Empty the chunk
 		chunk->size_next = 0;
@@ -83,6 +130,8 @@ void free(void *ptr)
     }
     else
         ft_printf("free(): invalid pointer\n", ptr);
+
+    // ft_printf("====================\n");
 }
 
 void    free_block_if_empty(t_block* block)

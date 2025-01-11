@@ -63,6 +63,7 @@ void    chunk_alloc(t_block *block, size_t size, t_chunk *chunk_next)
 	block->free_size -= (size_t)align((void *)ALIGNED_CHUNK + block->first_chunk->size);
 	if (chunk_next)
 	{
+		chunk_next->prev = block->first_chunk;
 		block->first_chunk->size_next = block->size_next - (size_t)align((void *)ALIGNED_CHUNK + block->first_chunk->size);
 	}
 	else
@@ -173,7 +174,7 @@ bool    try_alloc_new_chunk_if_space_after_chunk(t_block* block, t_chunk *prev_c
 	// if (next_chunk && new_chunk->size == 0)
     	// new_chunk->next = next_chunk->next;
 	// else
-    	new_chunk->next = next_chunk;
+	new_chunk->next = next_chunk;
 
 	// if (next_chunk) ///
 	// 	ft_printf("4 next_chunk->next       %p, %T\n", next_chunk->next, (size_t)next_chunk->next);

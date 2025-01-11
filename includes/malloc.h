@@ -97,6 +97,9 @@ void	*malloc(size_t size);
 void	free(void *ptr);
 void    free_block_if_empty(t_block* block);
 
+// realloc.c
+void	*realloc(void *ptr, size_t size);
+
 // allocation.c
 void*	align(void *ptr_to_align);
 void	heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size);
