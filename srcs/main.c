@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 18:26:59 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/09 18:37:46 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/13 14:28:34 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,13 @@ void	malloc_test()
 	// test_error(&error);
 	// test_tiny(&error);
 	// test_small(&error);
+	char *str = malloc(100 * sizeof(char));
+	(void)str;
 	
 	ft_printf("TOTAL ERROR : %d\n", error);
-
-	ft_printf("\n================== SHOW DEBUG ================\n\n");
     show_alloc_debug();
-    
-    ft_printf("\n===================== SHOW ===================\n\n");
+    show_alloc_debug();
+
     show_alloc_mem();
 }
 
@@ -126,10 +126,6 @@ void	test_tiny(size_t *error)
 	if (addr && g_data && (g_data->total_size - len_init) != len && ft_strncmp(addr, "1", len_tmp))
 		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
 		
-	// malloc(5), write "Hello", result : "Hello"
-	len_tmp = 5 * sizeof(char);
-	len += len_tmp;
-	addr = malloc(len_tmp);
 	ft_strlcpy(addr, "Hello", len_tmp);
 	if (addr && g_data && (g_data->total_size - len_init) != len && ft_strncmp(addr, "Hello", len_tmp))
 		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);

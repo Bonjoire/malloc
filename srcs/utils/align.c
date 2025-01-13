@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   align.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 16:40:46 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/06 16:44:12 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/13 14:28:49 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-void *align(void *ptr_to_align)
+void	*align(void *ptr_to_align)
 {
     uintptr_t new_ptr = (uintptr_t)ptr_to_align;
 
