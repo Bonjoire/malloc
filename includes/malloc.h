@@ -43,7 +43,7 @@
 # define SMALL_S_MAX_ALLOC		(size_t)align((void*)((SMALL_S - ALIGNED_BLOCK) / 100) - ALIGNED_CHUNK - ALIGNMENT)
 
 // TINY_S_MAX_ALLOC		= 112 bytes
-// SMALL_S_MAX_ALLOC	= 5148 bytes
+// SMALL_S_MAX_ALLOC	= 5184 bytes
 
 typedef struct data
 {
