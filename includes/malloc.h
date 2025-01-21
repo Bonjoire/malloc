@@ -22,6 +22,10 @@
 # include <sys/time.h>
 # include <sys/resource.h>
 
+// test section in main.c
+# define DO_FREE_AFTER_MALLOC		1
+# define DO_NOT_FREE_AFTER_MALLOC	0
+
 # define PAGESIZE 				(size_t)sysconf(_SC_PAGESIZE)	// 4096 bytes
 # define TINY_S					(size_t)PAGESIZE * 4			// 16384 bytes
 # define SMALL_S				(size_t)PAGESIZE * 128			// 524288 bytes

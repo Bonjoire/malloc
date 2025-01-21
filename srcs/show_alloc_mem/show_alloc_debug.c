@@ -23,7 +23,7 @@ void	show_alloc_debug()
 		return ;
 	}
 
-	ft_printf("\n============== SHOW ALLOC DEBUG ==============\n|\n");
+	ft_printf("\n| ====== SHOW ALLOC DEBUG ======\n|\n");
 
 	long long base = (size_t)g_data;
 	ft_printf("| DATA :      %p (%T)\n", g_data, (size_t)g_data - (size_t)base);
@@ -37,7 +37,7 @@ void	show_alloc_debug()
 	ft_printf("| - Large :      (16)%p, (10)%T\n", g_data->large_heap, (size_t)g_data->large_heap);
 	show_large_heap(g_data->large_heap);
 
-	ft_printf("|\n==============================================\n");
+	ft_printf("|\n================================\n");
 }
 
 static void	show_heap(t_heap *heap)

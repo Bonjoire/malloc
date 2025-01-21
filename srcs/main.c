@@ -13,27 +13,14 @@
 #include "malloc.h"
 
 void	malloc_test();
-void	test_tiny(size_t *error);
-void	test_small(size_t *error);
-void	test_free(size_t *error);
+void	test_tiny(int *error, int to_free);
+void	test_small(int *error, int to_free);
+void	test_large(int *error, int to_free);
+void	test_free(int *error);
 void	test_realloc();
-void	test_large(size_t *error);
 
 int main()
 {   
-    ft_printf("\n==================== MAIN ====================\n\n");
-	
-    ft_printf("PAGESIZE = %d\n", (int)PAGESIZE);
-    ft_printf("TINY_S = %d\n", (int)TINY_S);
-    ft_printf("SMALL_S = %d\n", (int)SMALL_S);
-    ft_printf("TINY_S_MAX_ALLOC = %d\n", (int)TINY_S_MAX_ALLOC);
-    ft_printf("SMALL_S_MAX_ALLOC = %d\n", (int)SMALL_S_MAX_ALLOC);
-    ft_printf("ALIGNED_DATA = %d\n", (int)ALIGNED_DATA);
-    ft_printf("ALIGNED_HEAP = %d\n", (int)ALIGNED_HEAP);
-    ft_printf("ALIGNED_LARGE_HEAP = %d\n", (int)ALIGNED_LARGE_HEAP);
-    ft_printf("ALIGNED_BLOCK = %d\n", (int)ALIGNED_BLOCK);
-    ft_printf("ALIGNED_CHUNK = %d\n", (int)ALIGNED_CHUNK);
-
     ft_printf("\n==================== TEST ====================\n\n");
 	malloc_test();
 }
@@ -42,94 +29,94 @@ int main()
 
 void	malloc_test()
 {
-	// return ;
+	int	error	= 0;
+	
+	test_tiny(&error, DO_FREE_AFTER_MALLOC);
+	test_small(&error, DO_FREE_AFTER_MALLOC);
+	test_large(&error, DO_FREE_AFTER_MALLOC);
+	test_free(&error);
+	test_realloc();
 
-	size_t	error	= 0;
-	
-	// test_realloc();
-	// test_error(&error);
-	// test_tiny(&error);
-	// test_small(&error);
-	// test_large(&error);
-	
 	ft_printf("TOTAL ERROR : %d\n", error);
     show_alloc_debug();
-
     show_alloc_mem();
 }
 
-// faire des test un peut mieux car la ca fait moche
-void	test_tiny(size_t *error)
+void	test_tiny(int *error, int to_free)
 {
-	size_t	len			= 0;
-	size_t	len_tmp		= 0;
-	size_t	len_init	= g_data ? g_data->total_size : 0;
-	void	*addr;
+	void	*addr[5000];
+	size_t	len_tmp	= 0;
+	size_t	nb_addr	= 0;
 
 	ft_printf("--> TEST : tiny heap alloc\n");
 
 	// malloc(0), check if 0 bytes alloc in tiny heap
 	{
 		len_tmp = 0;
-		len += len_tmp;
-		addr = malloc(len_tmp);
-		if (addr && g_data && (g_data->total_size - len_init) != len)
+		addr[nb_addr++] = malloc(len_tmp);
+		if (!addr[nb_addr - 1])
 			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+		if (to_free)
+			free(addr[--nb_addr]);
 	}
+
 
 	// malloc(16), fill completely a block
 	// check there is no more space in the block
-
-	// (size  + metadata chunk) * 255 * sizeof(char) + metadata block
-	// (16    + 48)             * 255 * 1            + 48             = 16368 bytes
-	// 16368/16384 is the max memory allocatable in tiny
-	for (int i = 0; i != 255; i++)
 	{
-		len_tmp = 16 * sizeof(char);
-		len += len_tmp;
-		addr = malloc(len_tmp);
-		if (addr && g_data && (g_data->total_size - len_init) != len)
-			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+		// (size  + metadata chunk) * 255 * sizeof(char) + metadata block
+		// (16    + 48)             * 255 * 1            + 48             = 16368 bytes
+		// 16368/16384 is the max memory allocatable in tiny
+		for (int i = 0; i != 255; i++)
+		{
+			len_tmp = 16 * sizeof(char);
+			addr[nb_addr++] = malloc(len_tmp);
+			if (!addr[nb_addr - 1])
+				ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+		}
+		for (int i = 0; to_free && i != 255; i++)
+			free(addr[--nb_addr]);
 	}
 
 	// malloc(112), check if 112 bytes alloc in tiny heap
 	// need minimum 100 alloc
-	for (int i = 0; i != 100; i++)
 	{
-		len_tmp = 112 * sizeof(char);
-		len += len_tmp;
-		addr = malloc(len_tmp);
-		if (addr && g_data && (g_data->total_size - len_init) != len)
-			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+		for (int i = 0; i != 100; i++)
+		{
+			len_tmp = 112 * sizeof(char);
+			addr[nb_addr++] = malloc(len_tmp);
+			if (!addr[nb_addr - 1])
+				ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+		}
+		for (int i = 0; to_free &&  i != 100; i++)
+			free(addr[--nb_addr]);
 	}
 
-	// malloc(2), write "1", result : "1"
-	len_tmp = 2 * sizeof(char);
-	len += len_tmp;
-	addr = malloc(len_tmp);
-	ft_strlcpy(addr, "1", len_tmp);
-	if (addr && g_data && (g_data->total_size - len_init) != len && ft_strncmp(addr, "1", len_tmp))
-		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
-		
-	ft_strlcpy(addr, "Hello", len_tmp);
-	if (addr && g_data && (g_data->total_size - len_init) != len && ft_strncmp(addr, "Hello", len_tmp))
-		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+	{
+		// malloc(2), write "1", result : "1"
+		len_tmp = 2 * sizeof(char);
+		addr[nb_addr++] = malloc(len_tmp);
+		if (addr[nb_addr - 1])
+			ft_strlcpy(addr[nb_addr - 1], "1", len_tmp);
+		if (!addr[nb_addr - 1] || (addr[nb_addr - 1] && ft_strncmp(addr[nb_addr - 1], "1", len_tmp)))
+			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
 
-	// malloc(2), overwrite "Hello", result : "H"
-	len_tmp = 2 * sizeof(char);
-	len += len_tmp;
-	addr = malloc(len_tmp);
-	ft_strlcpy(addr, "Hello", len_tmp);
-	if (addr && g_data && (g_data->total_size - len_init) != len && ft_strncmp(addr, "H", len_tmp))
-		ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+		// malloc(2), overwrite "Hello", result : "H"
+		if (addr[nb_addr - 1])
+			ft_strlcpy(addr[nb_addr - 1], "Hello", len_tmp);
+		if (!addr[nb_addr - 1] || (addr[nb_addr - 1] && ft_strncmp(addr[nb_addr - 1], "H", len_tmp)))
+			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+
+		if (to_free)
+			free(addr[--nb_addr]);
+	}
 }
 
-void	test_small(size_t *error)
+void	test_small(int *error, int to_free)
 {
-	size_t	len			= 0;
-	size_t	len_tmp		= 0;
-	size_t	len_init	= g_data ? g_data->total_size : 0;
-	void	*addr;
+	void	*addr[5000];
+	int		len_tmp	= 0;
+	int		nb_addr	= 0;
 	char	*str;
 
 	ft_printf("--> TEST : small heap alloc\n");
@@ -140,123 +127,99 @@ void	test_small(size_t *error)
 	// (size  + metadata chunk) * 127 * sizeof(char) + size + metadata block
 	// (4048  + 48)             * 127 * 1            + 4000 + 48             = 524288 bytes
 	// 524288/524288 is the max memory allocatable in small heap
-	for (int i = 0; i != 127; i++)
 	{
-		len_tmp = 4048 * sizeof(char);
-		len += len_tmp;
-		addr = malloc(len_tmp);
-		if (addr && g_data && (g_data->total_size - len_init) != len)
-			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
-	}
-	for (int i = 1; i != 2; i++)
-	{
-		len_tmp = 4000 * sizeof(char);
-		len += len_tmp;
-		addr = malloc(len_tmp);
-		if (addr && g_data && (g_data->total_size - len_init) != len)
-			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+		for (int i = 0; i < 127; i++)
+		{
+			len_tmp = 4048;
+			addr[nb_addr++] = malloc(len_tmp);
+			if (!addr[nb_addr - 1])
+				ft_printf("ERROR : malloc(%d) = %p\n", (int)len_tmp, addr[nb_addr - 1]), (*error)++;
+		}
+		for (int i = 0; i < 1; i++)
+		{
+			len_tmp = 4000;
+			addr[nb_addr++] = malloc(len_tmp);
+			if (!addr[nb_addr - 1])
+				ft_printf("ERROR : malloc(%d) = %p\n", (int)len_tmp, addr[nb_addr - 1]), (*error)++;
+		}
+		for (int i = 0; to_free && i < 127 + 1; i++)
+			free(addr[--nb_addr]);
 	}
 
 	// malloc(112), check if 5148 bytes alloc in small 
 	// need minimum 100 alloc
-	for (int i = 1; i != 100; i++)
 	{
-		len_tmp = 5148 * sizeof(char);
-		len += len_tmp;
-		addr = malloc(len_tmp);
-		if (addr && g_data && (g_data->total_size - len_init) != len)
-			ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr,(*error)++);
+		for (int i = 0; i < 100; i++)
+    	{
+			len_tmp = 5184;
+			addr[nb_addr++] = malloc(len_tmp);
+			if (!addr[nb_addr - 1])
+				ft_printf("ERROR : malloc(%d) = %p\n", (int)len_tmp, addr[nb_addr - 1]), (*error)++;
+   		}
+		for (int i = 0; to_free && i < 100; i++)
+			free(addr[--nb_addr]);
 	}
 
 	// malloc(128), write "1111"... , result : "1111"...
-	len_tmp = 128 * sizeof(char);
-	len += len_tmp;
-	str = malloc(len_tmp);
-	if (str && g_data && (g_data->total_size - len_init) != len)
-		ft_printf("ERROR : malloc(%d) = %s\n", len_tmp, str,(*error)++);
-	for (int i = 0; i != 127; i++)
-		str[i] = '1';
-	str[len_tmp - 1] = '\0';
-	for (int i = 0; i != 127; i++)
-		if (str[i] != '1')
-			ft_printf("ERROR : malloc(%d) str[%d] = %s,\n", len_tmp, i, str, (*error)++);
-			
-	// malloc(128), write "H", result : "H"
-	len_tmp = 128 * sizeof(char);
-	len += len_tmp;
-	str = malloc(len_tmp);
-	ft_strlcpy(str, "H", len_tmp);
-	if (str && g_data && (g_data->total_size - len_init) != len && ft_strncmp(str, "H", len_tmp))
-		ft_printf("ERROR : malloc(%d) = %s\n", len_tmp, str,(*error)++);
+	{
+		len_tmp = 128;
+		str = malloc(len_tmp);
+		addr[nb_addr++] = str;
+		if (!str)
+			ft_printf("ERROR : malloc(%d) = %p\n", (int)len_tmp, str), (*error)++;
+		else
+		{
+			for (int i = 0; i < (int)len_tmp - 1; i++)
+				str[i] = '1';
+			str[len_tmp - 1] = '\0';
+			for (int i = 0; i < (int)len_tmp - 1; i++)
+				if (str[i] != '1')
+					ft_printf("ERROR : bad write in str[%d]\n", i), (*error)++;
+		}
+		if (to_free)
+			free(addr[--nb_addr]);
+	}
+
+    // malloc(128) and write "H"
+	{
+		len_tmp = 128;
+		str = malloc(len_tmp);
+		addr[nb_addr++] = str;
+		if (!str)
+			ft_printf("ERROR : malloc(%d) = %p\n", (int)len_tmp, str), (*error)++;
+		else
+		{
+			ft_strlcpy(str, "H", len_tmp);
+			if (ft_strncmp(str, "H", len_tmp))
+				ft_printf("ERROR : malloc(%d) content != H\n", (int)len_tmp), (*error)++;
+		}
+		if (to_free)
+			free(addr[--nb_addr]);
+	}
 }
 
-void	test_large(size_t *error)
+void	test_large(int *error, int to_free)
 {
-    size_t len = 0;
-    size_t len_tmp = 0;
-    size_t len_init = g_data ? g_data->total_size : 0;
-    void *addr;
+    void	*addr[10];
+    size_t	nb_addr = 0;
+    size_t	len = 0;
+    size_t	sizes[] = {5185, 16384, 32768, 65536, 131072, 262144, 524288, 1048576};
 
     ft_printf("--> TEST : large heap alloc\n");
 
-    // malloc(5185), check if 5185 bytes alloc in large heap
-    len_tmp = 5185 * sizeof(char);
-    len += len_tmp;
-    addr = malloc(len_tmp);
-    if (addr && g_data && (g_data->total_size - len_init) != len)
-        ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr, (*error)++);
-
-    // malloc(16384), check if 16384 bytes alloc in large heap
-    len_tmp = 16384 * sizeof(char);
-    len += len_tmp;
-    addr = malloc(len_tmp);
-    if (addr && g_data && (g_data->total_size - len_init) != len)
-        ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr, (*error)++);
-
-    // malloc(32768), check if 32768 bytes alloc in large heap
-    len_tmp = 32768 * sizeof(char);
-    len += len_tmp;
-    addr = malloc(len_tmp);
-    if (addr && g_data && (g_data->total_size - len_init) != len)
-        ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr, (*error)++);
-
-    // malloc(65536), check if 65536 bytes alloc in large heap
-    len_tmp = 65536 * sizeof(char);
-    len += len_tmp;
-    addr = malloc(len_tmp);
-    if (addr && g_data && (g_data->total_size - len_init) != len)
-        ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr, (*error)++);
-
-    // malloc(131072), check if 131072 bytes alloc in large heap
-    len_tmp = 131072 * sizeof(char);
-    len += len_tmp;
-    addr = malloc(len_tmp);
-    if (addr && g_data && (g_data->total_size - len_init) != len)
-        ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr, (*error)++);
-
-    // malloc(262144), check if 262144 bytes alloc in large heap
-    len_tmp = 262144 * sizeof(char);
-    len += len_tmp;
-    addr = malloc(len_tmp);
-    if (addr && g_data && (g_data->total_size - len_init) != len)
-        ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr, (*error)++);
-
-    // malloc(524288), check if 524288 bytes alloc in large heap
-    len_tmp = 524288 * sizeof(char);
-    len += len_tmp;
-    addr = malloc(len_tmp);
-    if (addr && g_data && (g_data->total_size - len_init) != len)
-        ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr, (*error)++);
-
-    // malloc(1048576), check if 1048576 bytes alloc in large heap
-    len_tmp = 1048576 * sizeof(char);
-    len += len_tmp;
-    addr = malloc(len_tmp);
-    if (addr && g_data && (g_data->total_size - len_init) != len)
-        ft_printf("ERROR : malloc(%d) = %p\n", len_tmp, addr, (*error)++);
+    for (int i = 0; i < 8; i++)
+    {
+        size_t len_tmp = sizes[i] * sizeof(char);
+        len += len_tmp;
+        addr[nb_addr++] = malloc(len_tmp);
+        if (addr[nb_addr - 1] && g_data && (g_data->total_size != len))
+            ft_printf("ERROR : malloc(%u) = %p\n", (unsigned)len_tmp, addr[nb_addr - 1]), (*error)++;
+    }
+	for (int i = 0; to_free && i < 8; i++)
+		free(addr[--nb_addr]);
 }
 
-void	test_free(size_t *error)
+void	test_free(int *error)
 {
 	ft_printf("--> TEST : free\n");
 
