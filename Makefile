@@ -28,10 +28,12 @@ SRC			=	srcs/malloc/malloc.c \
 				srcs/malloc/init.c \
 				srcs/free/free.c \
 				srcs/realloc/realloc.c \
-				srcs/show_alloc_mem/show_alloc_mem.c \
-				srcs/show_alloc_mem/show_alloc_debug.c \
+				srcs/show_mem/show_hexa_dump.c \
+				srcs/show_mem/show_alloc_mem.c \
+				srcs/show_mem/show_alloc_debug.c \
 				srcs/utils/align.c \
-				srcs/utils/find_address.c \
+				srcs/utils/find_address_heap.c \
+				srcs/utils/find_address_large_heap.c \
 
 OBJ			= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 

@@ -28,7 +28,7 @@ void	show_alloc_mem()
         return ;
 	}
     
-    ft_putstr_fd("\n| ======= SHOW ALLOC MEM =======\n|\n", 1);
+    ft_putstr_fd("\n======== SHOW ALLOC MEM ========\n|\n", 1);
     
     show_tiny(&total);
     show_small(&total);
@@ -47,7 +47,7 @@ void	show_alloc_mem()
     }
 
 	ft_putstr_fd("|\n", 1);
-    ft_putstr_fd("| ==============================\n\n", 1);
+    ft_putstr_fd("================================\n\n", 1);
 }
 
 static void	show_tiny(size_t *total)

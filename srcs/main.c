@@ -18,6 +18,7 @@ void	test_small(int *error, int to_free);
 void	test_large(int *error, int to_free);
 void	test_free(int *error);
 void	test_realloc();
+void	test_hexa_dump(int to_free);
 
 int main()
 {   
@@ -36,10 +37,12 @@ void	malloc_test()
 	test_large(&error, DO_FREE_AFTER_MALLOC);
 	test_free(&error);
 	test_realloc();
+	test_hexa_dump(DO_FREE_AFTER_MALLOC);
 
 	ft_printf("TOTAL ERROR : %d\n", error);
     show_alloc_debug();
     show_alloc_mem();
+
 }
 
 void	test_tiny(int *error, int to_free)
@@ -404,3 +407,25 @@ void	test_realloc()
 		free(str3);
 	}
 }
+
+void test_hexa_dump(int to_free)
+{
+    ft_printf("--> TEST : show_hexa_dump\n");
+
+    char *ptr1 = malloc(ft_strlen("12345"));
+    if (ptr1)
+        ft_strlcpy(ptr1, "12345", ft_strlen("12345"));
+
+    char *ptr2 = malloc(184);
+    if (ptr2)
+        ft_strlcpy(ptr2, "In computing, a hex dump is a textual hexadecimal view (on screen or paper) of (often, but not necessarily binary) computer data, from memory or from a computer file or storage device", 184);
+
+    show_hexa_dump();
+
+	if (to_free)
+	{
+		free(ptr1);
+		free(ptr2);
+	}
+}
+

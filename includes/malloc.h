@@ -125,5 +125,6 @@ t_large_heap    *find_address_large_heap(void *addr);
 //	show_alloc_mem/*.c
 void	show_alloc_mem();
 void	show_alloc_debug();
+void    show_hexa_dump();
 
 #endif

@@ -23,7 +23,7 @@ void	show_alloc_debug()
 		return ;
 	}
 
-	ft_printf("\n| ====== SHOW ALLOC DEBUG ======\n|\n");
+	ft_printf("\n======= SHOW ALLOC DEBUG =======\n|\n");
 
 	long long base = (size_t)g_data;
 	ft_printf("| DATA :      %p (%T)\n", g_data, (size_t)g_data - (size_t)base);
