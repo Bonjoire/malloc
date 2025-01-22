@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 18:23:51 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/09 15:29:37 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/22 16:58:37 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <stdint.h>
 # include <sys/time.h>
 # include <sys/resource.h>
+# include <pthread.h>
 
 // test section in main.c
 # define DO_FREE_AFTER_MALLOC		1
@@ -59,7 +60,8 @@ typedef struct data
 	size_t				total_size;
 }					t_data;
 
-extern t_data *g_data;
+extern t_data			*g_data;
+extern pthread_mutex_t	g_mutex;
 
 typedef struct heap
 {
@@ -99,7 +101,7 @@ void	*malloc(size_t size);
 
 //	free.c
 void	free(void *ptr);
-void    free_block_if_empty(t_block* block);
+void    free_block_if_empty(t_block* block, t_heap* heap);
 
 // realloc.c
 void	*realloc(void *ptr, size_t size);
@@ -119,12 +121,22 @@ void	small_init(t_data **data);
 
 // utils/*.c
 void			*align(void *ptr_to_align);
-t_chunk			*find_address_heap(void *addr, t_block **parent_block);
+t_chunk			*find_address_heap(void *addr, t_block **parent_block, t_heap **parent_heap);
 t_large_heap    *find_address_large_heap(void *addr);
 
 //	show_alloc_mem/*.c
 void	show_alloc_mem();
 void	show_alloc_debug();
 void    show_hexa_dump();
+
+//	test/*.c
+void	test_tiny(int *error, int to_free);
+void	test_small(int *error, int to_free);
+void	test_large(int *error, int to_free);
+void	test_free(int *error);
+void	test_realloc();
+void	test_hexa_dump(int to_free);
+void	test_thread();
+void	*thread_function(void* arg);
 
 #endif

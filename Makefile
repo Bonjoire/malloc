@@ -6,15 +6,12 @@
 #    By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/31 14:29:47 by hubourge          #+#    #+#              #
-#    Updated: 2025/01/06 18:03:41 by hubourge         ###   ########.fr        #
+#    Updated: 2025/01/22 16:31:14 by hubourge         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CXX			= gcc
 
-# -Wpadded now if a structure is padded, it will be detected
-# -Wall -Wextra -Werror
-# strace a.out
 CFLAGS		=  -Wall -Wextra -Werror -fPIC -g
 INCLUDE		= -I includes
 
@@ -23,16 +20,23 @@ LIBFT		= $(LIBFT_DIR)/libft.a
 
 OBJ_DIR		= obj
 
-SRC			=	srcs/malloc/malloc.c \
+SRC			=	srcs/malloc/init.c     \
+				srcs/malloc/malloc.c    \
 				srcs/malloc/allocation.c \
-				srcs/malloc/init.c \
 				srcs/free/free.c \
 				srcs/realloc/realloc.c \
 				srcs/show_mem/show_hexa_dump.c \
-				srcs/show_mem/show_alloc_mem.c \
+				srcs/show_mem/show_alloc_mem.c  \
 				srcs/show_mem/show_alloc_debug.c \
-				srcs/utils/align.c \
-				srcs/utils/find_address_heap.c \
+				srcs/test/test_free.c \
+				srcs/test/test_tiny.c  \
+				srcs/test/test_small.c  \
+				srcs/test/test_large.c   \
+				srcs/test/test_thread.c   \
+				srcs/test/test_realloc.c   \
+				srcs/test/test_hexa_dump.c  \
+				srcs/utils/align.c                 \
+				srcs/utils/find_address_heap.c      \
 				srcs/utils/find_address_large_heap.c \
 
 OBJ			= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))

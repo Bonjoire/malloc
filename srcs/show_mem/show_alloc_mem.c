@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 19:35:53 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/13 14:28:26 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/22 14:25:21 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,13 @@ static void	show_large_heap(t_large_heap *heap, size_t *total);
 
 void	show_alloc_mem()
 {
+	pthread_mutex_lock(&g_mutex);
     size_t total = 0;
     
     if (g_data == NULL)
 	{
 		ft_putstr_fd("show_alloc_mem : No memory allocated\n", 1);
+		pthread_mutex_unlock(&g_mutex);
         return ;
 	}
     
@@ -48,6 +50,7 @@ void	show_alloc_mem()
 
 	ft_putstr_fd("|\n", 1);
     ft_putstr_fd("================================\n\n", 1);
+	pthread_mutex_unlock(&g_mutex);
 }
 
 static void	show_tiny(size_t *total)
