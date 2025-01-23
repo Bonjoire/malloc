@@ -1,8 +1,5 @@
 *.so
 *.o
 *.a
-test
-test.c
-test.txt
 .DS_STORE
 .vscode/
