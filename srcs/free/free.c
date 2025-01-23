@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 13:40:16 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/22 17:07:27 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/23 15:13:38 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 void free(void *ptr)
 {
 	pthread_mutex_lock(&g_mutex);
-    t_block *parent_block		= NULL;
-	t_heap	*parent_heap		= NULL;
-    t_chunk	*chunk              = find_address_heap(ptr, &parent_block, &parent_heap);
-    t_large_heap *large_heap    = find_address_large_heap(ptr);
-
 	if (!ptr)
 	{
 		pthread_mutex_unlock(&g_mutex);
 		return ;
 	}
 
+    t_block *parent_block		= NULL;
+	t_heap	*parent_heap		= NULL;
+    t_chunk	*chunk              = find_address_heap(ptr, &parent_block, &parent_heap);
+    t_large_heap *large_heap    = find_address_large_heap(ptr);
+	
     if (chunk)
     {
         t_chunk *prev_chunk = chunk->prev;

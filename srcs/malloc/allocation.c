@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 18:55:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/01/22 14:57:20 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/01/23 14:56:59 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,14 @@ void heap_alloc(t_heap *heap, size_t heap_pagesize, size_t size)
 		block = block->next;
 	}
 
+	struct rlimit limit;
+	getrlimit(RLIMIT_AS, &limit);
+	if((size_t)align(ALIGNED_LARGE_HEAP + (void*)size) >= limit.rlim_max)
+	{
+		g_data->failed = true;
+		return ;
+	}
+	
 	block = (t_block *)mmap(NULL, (size_t)heap_pagesize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 	if (block == MAP_FAILED)
 	{
@@ -163,7 +171,14 @@ void    large_alloc(t_large_heap *heap, size_t size)
 		heap_tmp = heap;
 		heap = heap->next;
 	}
-
+	
+	struct rlimit limit;
+	getrlimit(RLIMIT_AS, &limit);
+	if((size_t)align(ALIGNED_LARGE_HEAP + (void*)size) >= limit.rlim_max)
+	{
+		g_data->failed = true;
+		return ;
+	}
 	new_heap = (t_large_heap *)mmap(NULL, (size_t)align(ALIGNED_LARGE_HEAP + (void*)size), PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 	if (new_heap == MAP_FAILED)
 	{
