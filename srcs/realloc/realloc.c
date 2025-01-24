@@ -48,7 +48,7 @@ void	*realloc(void *ptr, size_t size)
         old_size = ((t_large_heap*)(ptr - ALIGNED_LARGE_HEAP))->size;
 
     // copy data from old ptr to new ptr
-    ft_memcpy(new_ptr, ptr, old_size < (size ? old_size : size));
+    ft_memcpy(new_ptr, ptr, old_size < size ? old_size : size);
 	pthread_mutex_unlock(&g_mutex);
     free(ptr);
     return (new_ptr);

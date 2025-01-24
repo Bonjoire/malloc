@@ -1,0 +1,83 @@
+10013  clear
+10014  wget https://cdn.intra.42.fr/document/document/25865/test0.c
+10015  wget https://cdn.intra.42.fr/document/document/25865/test1.c
+10016  wget https://cdn.intra.42.fr/document/document/25865/test2.c
+10017  wget https://cdn.intra.42.fr/document/document/25865/test3.c
+10018  wget https://cdn.intra.42.fr/document/document/25865/test4.c
+10019  wget https://cdn.intra.42.fr/document/document/25865/test5.c
+10020  ls
+10021  wget https://cdn.intra.42.fr/document/document/25866/test1.c
+10022  clear
+10023  wget https://cdn.intra.42.fr/document/document/25861/test4.c
+10024  wget https://cdn.intra.42.fr/document/document/25862/test3.c
+10025  wget https://cdn.intra.42.fr/document/document/25864/test2.c
+10026  wget https://cdn.intra.42.fr/document/document/25866/test5.c
+10027  wget https://cdn.intra.42.fr/document/document/25867/test1.c
+10028  ls
+10029  clear
+10030  gcc -o test0 test0.c && /usr/bin/time -l ./test0
+10031  gcc -o test0 test0.c && /usr/bin/time -v ./test0
+10032  gcc -o test1 test1.c && /usr/bin/time -v ./test1
+10033  cat test)
+10034  cat test0
+10035  cat test0.c
+10036  cat test1.c
+10037  clear
+10038  gcc -o test0 test0.c && /usr/bin/time -v ./test0 > test0.out
+10039  gcc -o test1 test1.c && /usr/bin/time -v ./test1 > test1.out
+10040  cat test1.out
+10041  gcc -o test0 test0.c && /usr/bin/time -v ./test0 &> test0.out
+10042  gcc -o test1 test1.c && /usr/bin/time -v ./test1 &> test1.out
+10043  cat test1.out
+10044  clear
+10045  chmod 777 run_linux.sh
+10046  wget https://cdn.intra.42.fr/document/document/25863/run_linux.sh
+10047  chmod 777 run_linux.sh
+10048  ./run_linux.sh /usr/bin/time -v ./test0
+10049  ./run_linux.sh /usr/bin/time -v ./test1
+10050  ./run_linux.sh /usr/bin/time -v ./test0 &> test0.outtoi
+10051  ./run_linux.sh /usr/bin/time -v ./test1 &> test1.outtoi
+10052  clera
+10053  clear
+10054  diff test0.out test0.outtoi
+10055  diff test1.out test1.outtoi
+10056  make test && ./test
+10057  clear && make test && ./test
+10058  clear
+10059  cat test2.c
+10060  gcc -o test2 test2.c && ./run_linux.sh /usr/bin/time -v ./test2 &> test2.out
+10061  cat test2.out
+10062  diff test1.out test2.out
+10063  diff test0.out test2.out
+10064  clear
+10065  gcc -o test3 test3.c -L. -lft_malloc && ./run_linux.sh ./test3
+10066  make
+10067  make re
+10068  gcc -o test3 test3.c -L. -lft_malloc && ./run_linux.sh ./test3
+10069  ls
+10070  gcc -o test3 test3.c -L. -lft_malloc_Testing && ./run_linux.sh ./test3
+10071  ls
+10072  ls libft
+10073  gcc -o test3 test3.c -L. -lft_malloc_Testing -L libft -lft && ./run_linux.sh ./test3
+10074  cat test3.c
+10075  code .
+10076  gcc -o test3 test3.c -L. -lft_malloc_Testing -L libft -lft && ./run_linux.sh ./test3
+10077  make re
+10078  gcc -o test3 test3.c -L. -lft_malloc_Testing -L libft -lft && ./run_linux.sh ./test3
+10079  clear
+10080  gcc -o test4 test4.c -L. -lft_malloc && ./run_linux.sh ./test4
+10081  gcc -o test4 test4.c -L. -lft_malloc -L libft -lft && ./run_linux.sh ./test4
+10082  gcc -o test5 test5.c -L. -lft_malloc && ./run_linux.sh ./test5
+10083  gcc -o test5 test5.c -L. -lft_malloc -L libft -lft && ./run_linux.sh ./test5
+10084  clear
+10085  make test
+10086  git restore .
+10087  make test
+10088  ./test
+10089  make test
+10090  clear
+10091  make test
+10092  ./test
+10093  valgrind ./test
+10094  ./test3
+10095  ls
