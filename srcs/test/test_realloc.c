@@ -69,10 +69,10 @@ void	test_realloc()
 	}
 	// Realloc same size
 	{
-		char *str1 = malloc(5 * sizeof(char));
+		char *str1 = malloc(6 * sizeof(char));
 		ft_strlcpy(str1, "Hello", ft_strlen("Hello") + 1);
 
-		str1 = realloc(str1, ft_strlen(str1) * sizeof(char));
+		str1 = realloc(str1, (ft_strlen(str1) + 1) * sizeof(char));
 
 		free(str1);
 	}

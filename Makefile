@@ -12,7 +12,7 @@
 
 CXX			= gcc
 
-CFLAGS		=  -Wall -Wextra -Werror -fPIC -g
+CFLAGS		=  -Wall -Wextra -Werror -fPIC  -g
 INCLUDE		= -I includes
 
 LIBFT_DIR	= ./libft
@@ -23,27 +23,26 @@ OBJ_DIR		= obj
 SRC			=	srcs/malloc/init.c     \
 				srcs/malloc/malloc.c    \
 				srcs/malloc/allocation.c \
-				srcs/free/free.c \
+				srcs/free/free.c      \
 				srcs/realloc/realloc.c \
-				srcs/show_mem/show_hexa_dump.c \
-				srcs/show_mem/show_alloc_mem.c  \
-				srcs/show_mem/show_alloc_debug.c \
-				srcs/test/test_free.c \
-				srcs/test/test_tiny.c  \
-				srcs/test/test_small.c  \
-				srcs/test/test_large.c   \
-				srcs/test/test_thread.c   \
-				srcs/test/test_realloc.c   \
-				srcs/test/test_hexa_dump.c  \
+				srcs/show_mem/show_hexa_dump.c  \
+				srcs/show_mem/show_alloc_mem.c   \
+				srcs/show_mem/show_alloc_debug.c  \
 				srcs/utils/align.c                 \
 				srcs/utils/find_address_heap.c      \
 				srcs/utils/find_address_large_heap.c \
 
-OBJ			= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
-
 SRC_TEST	= $(SRC) \
-			srcs/main.c
+			srcs/main.c          \
+			srcs/test/test_free.c \
+			srcs/test/test_tiny.c  \
+			srcs/test/test_small.c  \
+			srcs/test/test_large.c   \
+			srcs/test/test_thread.c   \
+			srcs/test/test_realloc.c   \
+			srcs/test/test_hexa_dump.c  \
 				
+OBJ			= $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 OBJ_TEST	= $(addprefix $(OBJ_DIR)/, $(SRC_TEST:.c=.o))
 
 ifeq ($(HOSTTYPE),)
@@ -76,11 +75,11 @@ $(OBJ_DIR)/%.o: %.c
 libft_malloc_$(HOSTTYPE).so: $(OBJ)
 	@ echo "$(YELLOW)Compiling objects...$(NC)"
 	@ echo "$(YELLOW)Creating libft_malloc_$(HOSTTYPE).so...$(NC)"
-	@ $(CXX) $(CFLAGS) ${INCLUDE} -shared -o $@ $(OBJ)
+	@ $(CXX) $(CFLAGS) ${INCLUDE} -shared -o $@ $(OBJ) -L$(LIBFT_DIR) -lft -lpthread
 
-test: fclean $(LIBFT) $(OBJ_TEST)
+test: fclean $(LIBFT) $(OBJ) $(OBJ_TEST)
 	@ echo "$(YELLOW)Compiling objects...$(NC)"
-	@ $(CXX) $(CFLAGS) ${INCLUDE} -o test $(OBJ_TEST) -L$(LIBFT_DIR) -lft
+	@ $(CXX) $(CFLAGS) ${INCLUDE} -o test $(OBJ_TEST) -L$(LIBFT_DIR) -lft -lpthread
 	@ echo "$(BIBlue)"
 	@ echo "                 _ _            "
 	@ echo "                | | |           "

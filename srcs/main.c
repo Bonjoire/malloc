@@ -32,7 +32,7 @@ void	malloc_test()
 	test_thread();
 	// test_hexa_dump(DO_FREE_AFTER_MALLOC);
 
-	ft_printf("\n\n--> TEST : TOTAL ERROR : %d\n", error);
+	ft_printf("\n--> TEST : TOTAL ERROR : %d\n", error);
     show_alloc_debug();
     show_alloc_mem();
 }

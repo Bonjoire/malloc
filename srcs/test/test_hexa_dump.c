@@ -29,11 +29,11 @@ void	test_hexa_dump(int to_free)
         ft_strlcpy(ptr3, "In computing, a hex dump is a textual hexadecimal view (on screen or paper)\
 of (often, but not necessarily binary) computer data, from memory or from a computer file or storage device", 183 + 1);
 
-	char *ptr4 = malloc(5200);
+	char *ptr4 = malloc(5208);
 	if(ptr4)
 	{
-		for(int i = 0; i < 5200; i += 41)
-			ft_strlcpy(&ptr4[i], "This is a test for a big chunk of memory", 40 + 1);
+		for(int i = 0; i < 5207; i += 41)
+			ft_strlcpy(&ptr4[i], "This is a test for a big chunk of memory!", 41 + 1);
 	}
 
     show_hexa_dump();

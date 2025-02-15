@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "malloc.h"
-#include <pthread.h>
-#include <string.h>
 
 #define ALLOCATION_SIZE 128
 #define NUM_THREADS 5
