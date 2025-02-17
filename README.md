@@ -44,7 +44,7 @@ void    show_hexa_dump();
 - 1️⃣ **Pre-alloue la structure principale**  
 - 2️⃣ **Alloue les metadata des block/chunk**  
 - 3️⃣ **Alloue l'espace mémoire aligné sur 16 bytes dans la heap correspondante** (voir image ci-dessous)  
-- 4️⃣ **Renvoyer le début de l'adresse alloue**
+- 4️⃣ **Renvoyer le début de l'adresse allouée**
 
 ### FREE
 
