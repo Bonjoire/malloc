@@ -39,12 +39,38 @@ void    show_hexa_dump();
 
 ## ⚙️ Comment ça fonctionne ?
 
-<!-- - 1️⃣ **Ouvrir le fichier objet**  
-- 2️⃣ **Mapper le fichier en mémoire**  
-- 3️⃣ **Lire le header ELF** (<u>en-tête contenant des infos sur le fichier, ex: type 32 bits ou 64 bits</u>)  
-- 4️⃣ **Lire la table des sections**  
-- 5️⃣ **Lire la table des symboles**  
-- 6️⃣ **Interpréter et afficher les symboles**  -->
+### MALLOC
+
+- 1️⃣ **Pre-alloue la structure principale**  
+- 2️⃣ **Alloue les metadata des block/chunk**  
+- 3️⃣ **Alloue l'espace mémoire aligné sur 16 bytes dans la heap correspondante** (voir image ci-dessous)  
+- 4️⃣ **Renvoyer le début de l'adresse alloue**
+
+### FREE
+
+- 1️⃣ **Libérer le chunk**  
+- 2️⃣ **Libérer le bloc si nécessaire**  
+- 3️⃣ **Défragmenter la mémoire (attribuer l'espace libéré à un autre chunk)**
+
+### REALLOC
+
+- 1️⃣ **MALLOC, un nouvel espace mémoire de la taille nécessaire**  
+- 2️⃣ **Copier les données dans le nouvel espace mémoire**  
+- 3️⃣ **FREE l'ancien espace mémoire**
+
+## Structure
+
+La structure data est séparée en **trois parties** : allocation de **petite taille** (PAGESIZE * 4), de **moyenne taille** (PAGESIZE * 128), et **grande taille** pour le reste des allocations. **PAGESIZE** en Linux est la taille d'une page mémoire, un bloc fixe (généralement 4 KB) utilisé par l'OS pour gérer, allouer et protéger la mémoire des processus.  
+  
+![Structure data](img/data_struct.png)  
+
+#### Définitions :
+
+🎩 **Tiny & Small Heap** → Contiennent leurs métadonnées et un nombre indéterminé de blocs.  
+🏗️ **Large Heap** → Contient ses métadonnées et un nombre indéterminé de chunks.  
+🧱 **Block** → Contient ses métadonnées et au moins 100 chunks.  
+🍫 **Chunk** → Contient ses métadonnées et les données utilisateur.  
+📑 **Métadonnées** → Informations stockées avant/autour des allocations. (taille, taille libre/occupée, pointeurs pour la gestion des listes chaînées...)  
 
 ## 🔗 Ressources
 
